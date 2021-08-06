@@ -41,6 +41,7 @@ import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -82,8 +83,7 @@ class IndexListenerTest {
     }).when(administrationContext).runAsAdmin(any(PrivilegedAction.class));
 
     indexListener.contextInitialized(null);
-
-    verify(indexSyncer).ensureIndexIsUpToDate(heartOfGold);
+    verify(indexSyncer, timeout(1000L)).ensureIndexIsUpToDate(heartOfGold);
   }
 
 }

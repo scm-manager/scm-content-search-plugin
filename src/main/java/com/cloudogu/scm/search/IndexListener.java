@@ -83,11 +83,12 @@ public class IndexListener implements ServletContextListener {
 
     @Override
     public void run() {
-      // TODO async
-      for (Repository repository : repositoryManager.getAll()) {
-        LOG.debug("startup check if index of repository {}, requires update", repository);
-        indexSyncer.ensureIndexIsUpToDate(repository);
-      }
+      new Thread(() -> {
+        for (Repository repository : repositoryManager.getAll()) {
+          LOG.debug("startup check if index of repository {}, requires update", repository);
+          indexSyncer.ensureIndexIsUpToDate(repository);
+        }
+      }, "BootstrapContentIndexer").start();
     }
   }
 }
