@@ -150,7 +150,7 @@ class IndexSyncerTest {
   private void support(boolean log, boolean browse, boolean baseMod) {
     lenient().doReturn(log).when(repositoryService).isSupported(Command.LOG);
     lenient().doReturn(browse).when(repositoryService).isSupported(Command.BROWSE);
-    lenient().doReturn(baseMod).when(repositoryService).isSupported(Feature.COMBINED_MODIFICATIONS);
+    lenient().doReturn(baseMod).when(repositoryService).isSupported(Feature.MODIFICATIONS_BETWEEN_REVISIONS);
   }
 
 }

@@ -65,7 +65,7 @@ public class IndexSyncer {
   private boolean isSupported(RepositoryService repositoryService) {
     return repositoryService.isSupported(Command.LOG)
       && repositoryService.isSupported(Command.BROWSE)
-      && repositoryService.isSupported(Feature.COMBINED_MODIFICATIONS);
+      && repositoryService.isSupported(Feature.MODIFICATIONS_BETWEEN_REVISIONS);
   }
 
   private void ensureIndexIsUpToDate(RepositoryService repositoryService) throws IOException {
