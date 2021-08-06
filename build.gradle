@@ -38,4 +38,9 @@ scmPlugin {
 
   author = "Cloudogu GmbH"
   category = "Search"
+
+  run {
+    loggingConfiguration = 'src/main/conf/logging.xml'
+  }
+
 }
