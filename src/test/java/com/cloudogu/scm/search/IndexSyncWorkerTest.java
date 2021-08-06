@@ -142,7 +142,7 @@ class IndexSyncWorkerTest {
       .hasValueSatisfying(status -> {
         assertThat(status.getRevision()).isEqualTo("42");
         assertThat(status.getLastUpdate()).isNotNull();
-        assertThat(status.getVersion()).isEqualTo(RepositoryContent.VERSION);
+        assertThat(status.getVersion()).isEqualTo(FileContent.VERSION);
       });
   }
 

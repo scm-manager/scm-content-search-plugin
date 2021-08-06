@@ -48,7 +48,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RepositoryContentFactoryTest {
+class FileContentFactoryTest {
 
   @Mock
   private ContentTypeResolver contentTypeResolver;
@@ -57,7 +57,7 @@ class RepositoryContentFactoryTest {
   private RepositoryService repositoryService;
 
   @InjectMocks
-  private RepositoryContentFactory repositoryContentFactory;
+  private FileContentFactory fileContentFactory;
 
   @Test
   void shouldCreateBinaryContent() throws IOException {
@@ -65,7 +65,7 @@ class RepositoryContentFactoryTest {
 
     when(contentTypeResolver.resolve("alpaka.png")).thenReturn(contentType);
 
-    RepositoryContent content = repositoryContentFactory.create(repositoryService, "42", "alpaka.png");
+    FileContent content = fileContentFactory.create(repositoryService, "42", "alpaka.png");
     assertThat(content.getRevision()).isEqualTo("42");
     assertThat(content.getPath()).isEqualTo("alpaka.png");
     assertThat(content.getContentType()).isEqualTo("image/png");
@@ -79,7 +79,7 @@ class RepositoryContentFactoryTest {
     when(contentTypeResolver.resolve("License.txt")).thenReturn(contentType);
     when(repositoryService.getCatCommand().setRevision("42").getStream("License.txt")).thenReturn(new ByteArrayInputStream(new byte[0]));
 
-    RepositoryContent content = repositoryContentFactory.create(repositoryService, "42", "License.txt");
+    FileContent content = fileContentFactory.create(repositoryService, "42", "License.txt");
 
     assertThat(content.getRevision()).isEqualTo("42");
     assertThat(content.getPath()).isEqualTo("License.txt");
@@ -101,7 +101,7 @@ class RepositoryContentFactoryTest {
     contentType = mockContentType(true, "text/java", "java");
     when(contentTypeResolver.resolve(eq("App.java"), any())).thenReturn(contentType);
 
-    RepositoryContent content = repositoryContentFactory.create(repositoryService, "42", "App.java");
+    FileContent content = fileContentFactory.create(repositoryService, "42", "App.java");
 
     assertThat(content.getRevision()).isEqualTo("42");
     assertThat(content.getPath()).isEqualTo("App.java");
@@ -122,7 +122,7 @@ class RepositoryContentFactoryTest {
     contentType = mockContentType(false, "application/octet-stream");
     when(contentTypeResolver.resolve(eq("bin"), any())).thenReturn(contentType);
 
-    RepositoryContent content = repositoryContentFactory.create(repositoryService, "21", "bin");
+    FileContent content = fileContentFactory.create(repositoryService, "21", "bin");
 
     assertThat(content.getRevision()).isEqualTo("21");
     assertThat(content.getPath()).isEqualTo("bin");

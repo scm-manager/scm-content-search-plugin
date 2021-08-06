@@ -40,22 +40,22 @@ class Indexer implements AutoCloseable {
 
   private final SearchEngine searchEngine;
   private final RepositoryService repositoryService;
-  private final RepositoryContentFactory repositoryContentFactory;
+  private final FileContentFactory fileContentFactory;
   private final Repository repository;
 
-  private Index<RepositoryContent> index;
+  private Index<FileContent> index;
 
   @Inject
-  Indexer(SearchEngine searchEngine, RepositoryContentFactory repositoryContentFactory, RepositoryService repositoryService) {
+  Indexer(SearchEngine searchEngine, FileContentFactory fileContentFactory, RepositoryService repositoryService) {
     this.searchEngine = searchEngine;
     this.repositoryService = repositoryService;
-    this.repositoryContentFactory = repositoryContentFactory;
+    this.fileContentFactory = fileContentFactory;
     this.repository = repositoryService.getRepository();
   }
 
-  private Index<RepositoryContent> open() {
+  private Index<FileContent> open() {
     if (index == null) {
-      index = searchEngine.forType(RepositoryContent.class).getOrCreate();
+      index = searchEngine.forType(FileContent.class).getOrCreate();
     }
     return index;
   }
@@ -64,10 +64,10 @@ class Indexer implements AutoCloseable {
     if (paths.isEmpty()) {
       return;
     }
-    Index<RepositoryContent> idx = open();
+    Index<FileContent> idx = open();
     for (String path : paths) {
-      RepositoryContent repositoryContent = repositoryContentFactory.create(repositoryService, revision, path);
-      idx.store(id(path), permission(), repositoryContent);
+      FileContent fileContent = fileContentFactory.create(repositoryService, revision, path);
+      idx.store(id(path), permission(), fileContent);
     }
   }
 

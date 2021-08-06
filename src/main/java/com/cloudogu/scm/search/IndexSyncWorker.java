@@ -56,10 +56,10 @@ class IndexSyncWorker {
     Optional<IndexStatus> status = indexStatusStore.get(repository);
     if (status.isPresent()) {
       IndexStatus indexStatus = status.get();
-      if (indexStatus.getVersion() != RepositoryContent.VERSION) {
+      if (indexStatus.getVersion() != FileContent.VERSION) {
         LOG.debug(
           "found index of repository {} in version {} required is {}, trigger reindex",
-          repository, indexStatus.getVersion(), RepositoryContent.VERSION
+          repository, indexStatus.getVersion(), FileContent.VERSION
         );
         reIndex();
       } else {

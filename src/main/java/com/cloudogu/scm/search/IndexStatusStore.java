@@ -51,7 +51,7 @@ public class IndexStatusStore {
   }
 
   private IndexStatus status(String revision) {
-    return new IndexStatus(revision, Instant.now(), RepositoryContent.VERSION);
+    return new IndexStatus(revision, Instant.now(), FileContent.VERSION);
   }
 
   public void update(Repository repository, String revision) {

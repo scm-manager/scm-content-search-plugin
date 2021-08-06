@@ -33,10 +33,10 @@ import javax.inject.Inject;
 public class IndexerFactory {
 
   private final SearchEngine searchEngine;
-  private final RepositoryContentFactory contentFactory;
+  private final FileContentFactory contentFactory;
 
   @Inject
-  public IndexerFactory(SearchEngine searchEngine, RepositoryContentFactory contentFactory) {
+  public IndexerFactory(SearchEngine searchEngine, FileContentFactory contentFactory) {
     this.searchEngine = searchEngine;
     this.contentFactory = contentFactory;
   }

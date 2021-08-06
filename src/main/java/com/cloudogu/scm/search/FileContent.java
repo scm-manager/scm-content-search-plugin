@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 @Getter
 @IndexedType("content")
 @SuppressWarnings("UnstableApiUsage")
-public class RepositoryContent {
+public class FileContent {
 
   static final int VERSION = 1;
 
@@ -62,7 +62,7 @@ public class RepositoryContent {
   @Indexed(type = Indexed.Type.STORED_ONLY)
   private final String codingLanguage;
 
-  private RepositoryContent(String revision, String path, ContentType contentType, @Nullable String content) {
+  private FileContent(String revision, String path, ContentType contentType, @Nullable String content) {
     this.revision = revision;
     this.path = path;
     this.contentType = contentType.getRaw();
@@ -70,11 +70,11 @@ public class RepositoryContent {
     this.content = content;
   }
 
-  static RepositoryContent binary(String revision, String path, ContentType contentType) {
-    return new RepositoryContent(revision, path, contentType, null);
+  static FileContent binary(String revision, String path, ContentType contentType) {
+    return new FileContent(revision, path, contentType, null);
   }
 
-  static RepositoryContent text(String revision, String path, ContentType contentType, String content) {
-    return new RepositoryContent(revision, path, contentType, content);
+  static FileContent text(String revision, String path, ContentType contentType, String content) {
+    return new FileContent(revision, path, contentType, content);
   }
 }

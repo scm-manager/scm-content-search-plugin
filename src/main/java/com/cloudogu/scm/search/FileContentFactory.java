@@ -33,26 +33,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class RepositoryContentFactory {
+public class FileContentFactory {
 
   private static final int HEAD_BUFFER_SIZE = 1024;
 
   private final ContentTypeResolver contentTypeResolver;
 
   @Inject
-  public RepositoryContentFactory(ContentTypeResolver contentTypeResolver) {
+  public FileContentFactory(ContentTypeResolver contentTypeResolver) {
     this.contentTypeResolver = contentTypeResolver;
   }
 
-  public RepositoryContent create(RepositoryService repositoryService, String revision, String path) throws IOException {
+  public FileContent create(RepositoryService repositoryService, String revision, String path) throws IOException {
     ContentType contentType = contentTypeResolver.resolve(path);
     if (contentType.isText()) {
       return createFromText(repositoryService, revision, path, contentType);
     }
-    return RepositoryContent.binary(revision, path, contentType);
+    return FileContent.binary(revision, path, contentType);
   }
 
-  private RepositoryContent createFromText(RepositoryService repositoryService, String revision, String path, ContentType contentType) throws IOException {
+  private FileContent createFromText(RepositoryService repositoryService, String revision, String path, ContentType contentType) throws IOException {
     try (InputStream content = repositoryService.getCatCommand()
       .setRevision(revision)
       .getStream(path)) {
@@ -65,13 +65,13 @@ public class RepositoryContentFactory {
           ByteArrayOutputStream output = new ByteArrayOutputStream();
           output.write(buffer);
           ByteStreams.copy(content, output);
-          return RepositoryContent.text(revision, path, moreAccurateContentType, output.toString());
+          return FileContent.text(revision, path, moreAccurateContentType, output.toString());
         } else {
-          return RepositoryContent.binary(revision, path, moreAccurateContentType);
+          return FileContent.binary(revision, path, moreAccurateContentType);
         }
       }
 
-      return RepositoryContent.binary(revision, path, contentType);
+      return FileContent.binary(revision, path, contentType);
     }
   }
 

@@ -59,7 +59,7 @@ class IndexerTest {
   private RepositoryService repositoryService;
 
   @Mock
-  private RepositoryContentFactory repositoryContentFactory;
+  private FileContentFactory fileContentFactory;
 
   @InjectMocks
   private IndexerFactory indexerFactory;
@@ -90,13 +90,13 @@ class IndexerTest {
 
   @Test
   void shouldStore() throws IOException {
-    Index<RepositoryContent> index = mockIndex();
+    Index<FileContent> index = mockIndex();
 
-    RepositoryContent a = RepositoryContent.binary("21", "a", contentType());
-    when(repositoryContentFactory.create(repositoryService, "42", "a")).thenReturn(a);
+    FileContent a = FileContent.binary("21", "a", contentType());
+    when(fileContentFactory.create(repositoryService, "42", "a")).thenReturn(a);
 
-    RepositoryContent b = RepositoryContent.binary("42", "b", contentType());
-    when(repositoryContentFactory.create(repositoryService, "42", "b")).thenReturn(b);
+    FileContent b = FileContent.binary("42", "b", contentType());
+    when(fileContentFactory.create(repositoryService, "42", "b")).thenReturn(b);
 
     indexer.store("42", Arrays.asList("a", "b"));
 
@@ -106,7 +106,7 @@ class IndexerTest {
 
   @Test
   void shouldDelete() {
-    Index<RepositoryContent> index = mockIndex();
+    Index<FileContent> index = mockIndex();
 
     Index.ByTypeDeleter deleter = mock(Index.ByTypeDeleter.class);
     when(index.delete().byType()).thenReturn(deleter);
@@ -119,7 +119,7 @@ class IndexerTest {
 
   @Test
   void shouldDeleteAll() {
-    Index<RepositoryContent> index = mockIndex();
+    Index<FileContent> index = mockIndex();
 
     Index.ByTypeDeleter deleter = mock(Index.ByTypeDeleter.class);
     when(index.delete().byType()).thenReturn(deleter);
@@ -138,7 +138,7 @@ class IndexerTest {
 
   @Test
   void shouldCloseIndex() {
-    Index<RepositoryContent> index = mockIndex();
+    Index<FileContent> index = mockIndex();
     Index.ByTypeDeleter deleter = mock(Index.ByTypeDeleter.class);
     when(index.delete().byType()).thenReturn(deleter);
     indexer.deleteAll();
@@ -149,9 +149,9 @@ class IndexerTest {
   }
 
   @SuppressWarnings("unchecked")
-  private Index<RepositoryContent> mockIndex() {
-    Index<RepositoryContent> index = mock(Index.class, Answers.RETURNS_DEEP_STUBS);
-    when(searchEngine.forType(RepositoryContent.class).getOrCreate()).thenReturn(index);
+  private Index<FileContent> mockIndex() {
+    Index<FileContent> index = mock(Index.class, Answers.RETURNS_DEEP_STUBS);
+    when(searchEngine.forType(FileContent.class).getOrCreate()).thenReturn(index);
     return index;
   }
 
