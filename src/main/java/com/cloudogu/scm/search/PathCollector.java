@@ -22,10 +22,13 @@
  * SOFTWARE.
  */
 
-describe("frontend unit tests", () => {
+package com.cloudogu.scm.search;
 
-  it("some test", () => {
-    expect( 21 * 2 ).toBe(42);
-  });
+import java.util.Collection;
 
-});
+public interface PathCollector {
+
+  Collection<String> getPathToStore();
+  Collection<String> getPathToDelete();
+
+}

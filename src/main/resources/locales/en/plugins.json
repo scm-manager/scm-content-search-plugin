@@ -1,5 +1,13 @@
 {
   "scm-code-search-plugin": {
 
+  },
+  "search": {
+    "types": {
+      "content": {
+        "subtitle": "Content",
+        "navItem": "Content"
+      }
+    }
   }
 }

@@ -22,7 +22,23 @@
  * SOFTWARE.
  */
 
-import { binder } from "@scm-manager/ui-extensions";
-import ContentHitRenderer from "./ContentHitRenderer";
+package com.cloudogu.scm.search;
 
-binder.bind("search.hit.content.renderer", ContentHitRenderer);
+import sonia.scm.repository.api.RepositoryService;
+
+import javax.inject.Inject;
+
+public class IndexSyncWorkerFactory {
+
+  private final IndexingContextFactory indexingContextFactory;
+
+  @Inject
+  public IndexSyncWorkerFactory(IndexingContextFactory indexingContextFactory) {
+    this.indexingContextFactory = indexingContextFactory;
+  }
+
+  public IndexSyncWorker create(RepositoryService repositoryService, Indexer indexer) {
+    return new IndexSyncWorker(indexingContextFactory.create(repositoryService, indexer));
+  }
+
+}
