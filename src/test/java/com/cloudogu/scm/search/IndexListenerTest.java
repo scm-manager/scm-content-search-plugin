@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.repository.DefaultBranchChangedEvent;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
@@ -61,10 +62,22 @@ class IndexListenerTest {
   private IndexListener indexListener;
 
   @Test
-  void shouldTriggerUpdateOnEvent() {
+  void shouldTriggerUpdateOnPostReceiveRepositoryHookEvent() {
     Repository heartOfGold = RepositoryTestData.createHeartOfGold();
 
     PostReceiveRepositoryHookEvent event = mock(PostReceiveRepositoryHookEvent.class);
+    when(event.getRepository()).thenReturn(heartOfGold);
+
+    indexListener.handle(event);
+
+    verify(indexSyncer).ensureIndexIsUpToDate(heartOfGold);
+  }
+
+  @Test
+  void shouldTriggerUpdateOnDefaultBranchChangedEvent() {
+    Repository heartOfGold = RepositoryTestData.createHeartOfGold();
+
+    DefaultBranchChangedEvent event = mock(DefaultBranchChangedEvent.class);
     when(event.getRepository()).thenReturn(heartOfGold);
 
     indexListener.handle(event);

@@ -27,6 +27,7 @@ import com.github.legman.Subscribe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.plugin.Extension;
+import sonia.scm.repository.DefaultBranchChangedEvent;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
@@ -63,6 +64,15 @@ public class IndexListener implements ServletContextListener {
   @Subscribe
   public void handle(PostReceiveRepositoryHookEvent event) {
     LOG.debug("received hook event for repository {}, update index if necessary", event.getRepository());
+    indexSyncer.ensureIndexIsUpToDate(event.getRepository());
+  }
+
+  @Subscribe
+  public void handle(DefaultBranchChangedEvent event) {
+    LOG.debug(
+      "received default branch changed event for repository {}, update index if necessary",
+      event.getRepository()
+    );
     indexSyncer.ensureIndexIsUpToDate(event.getRepository());
   }
 
