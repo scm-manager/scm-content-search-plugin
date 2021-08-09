@@ -24,6 +24,8 @@
 
 package com.cloudogu.scm.search;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryPermissions;
 import sonia.scm.repository.api.RepositoryService;
@@ -37,6 +39,8 @@ import java.util.Collection;
 
 @SuppressWarnings("UnstableApiUsage")
 class Indexer implements AutoCloseable {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Indexer.class);
 
   private final SearchEngine searchEngine;
   private final RepositoryService repositoryService;
@@ -66,6 +70,7 @@ class Indexer implements AutoCloseable {
     }
     Index<FileContent> idx = open();
     for (String path : paths) {
+      LOG.trace("store {} to index", path);
       FileContent fileContent = fileContentFactory.create(repositoryService, revision, path);
       idx.store(id(path), permission(), fileContent);
     }
@@ -77,6 +82,7 @@ class Indexer implements AutoCloseable {
     }
     Index.ByTypeDeleter deleter = open().delete().byType();
     for (String path : paths) {
+      LOG.trace("delete {} from index", path);
       deleter.byId(id(path));
     }
   }
