@@ -24,6 +24,7 @@
 
 package com.cloudogu.scm.search;
 
+import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sonia.scm.repository.Feature;
@@ -69,9 +70,12 @@ public class IndexSyncer {
   }
 
   private void ensureIndexIsUpToDate(RepositoryService repositoryService) throws IOException {
+    Stopwatch sw = Stopwatch.createStarted();
     try (Indexer indexer = indexerFactory.create(repositoryService)) {
       IndexSyncWorker worker = indexSyncWorkerFactory.create(repositoryService, indexer);
       worker.ensureIndexIsUpToDate();
+    } finally {
+      LOG.debug("ensure index is up to date operation finished in {}", sw.stop());
     }
   }
 
