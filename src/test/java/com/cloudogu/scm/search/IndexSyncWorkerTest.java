@@ -158,8 +158,8 @@ class IndexSyncWorkerTest {
 
   @Test
   void shouldUpdateIndex() throws IOException {
-    statusStore.update(repository, "42");
-    when(latestRevisionResolver.resolve()).thenReturn(Optional.of("21"));
+    statusStore.update(repository, "21");
+    when(latestRevisionResolver.resolve()).thenReturn(Optional.of("42"));
 
     List<String> pathToStore = Arrays.asList("a", "b");
     when(updatePathCollector.getPathToStore()).thenReturn(pathToStore);

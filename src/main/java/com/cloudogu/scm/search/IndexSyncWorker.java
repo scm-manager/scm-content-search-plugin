@@ -74,7 +74,7 @@ class IndexSyncWorker {
   private void ensureIndexIsUpToDate(String revision) throws IOException {
     Optional<String> latestRevision = latestRevisionResolver.resolve();
     if (latestRevision.isPresent()) {
-      ensureIndexIsUpToDate(latestRevision.get(), revision);
+      ensureIndexIsUpToDate(revision, latestRevision.get());
     } else {
       emptyRepository();
     }
