@@ -69,12 +69,13 @@ class FileContentFactoryTest {
     assertThat(content.getRevision()).isEqualTo("42");
     assertThat(content.getPath()).isEqualTo("alpaka.png");
     assertThat(content.getContentType()).isEqualTo("image/png");
+    assertThat(content.isBinary()).isTrue();
     assertThat(content.getContent()).isNull();
     assertThat(content.getCodingLanguage()).isNull();
   }
 
   @Test
-  void shouldReturnBinaryWithEmptyBuffer() throws IOException {
+  void shouldReturnEmptyWithEmptyBuffer() throws IOException {
     ContentType contentType = mockContentType(true, "application/octet-stream");
     when(contentTypeResolver.resolve("License.txt")).thenReturn(contentType);
     when(repositoryService.getCatCommand().setRevision("42").getStream("License.txt")).thenReturn(new ByteArrayInputStream(new byte[0]));
@@ -84,6 +85,7 @@ class FileContentFactoryTest {
     assertThat(content.getRevision()).isEqualTo("42");
     assertThat(content.getPath()).isEqualTo("License.txt");
     assertThat(content.getContentType()).isEqualTo("application/octet-stream");
+    assertThat(content.isBinary()).isFalse();
     assertThat(content.getContent()).isNull();
     assertThat(content.getCodingLanguage()).isNull();
   }
@@ -106,6 +108,7 @@ class FileContentFactoryTest {
     assertThat(content.getRevision()).isEqualTo("42");
     assertThat(content.getPath()).isEqualTo("App.java");
     assertThat(content.getContentType()).isEqualTo("text/java");
+    assertThat(content.isBinary()).isFalse();
     assertThat(content.getContent()).isEqualTo(contentValue);
     assertThat(content.getCodingLanguage()).isEqualTo("java");
   }
@@ -127,6 +130,7 @@ class FileContentFactoryTest {
     assertThat(content.getRevision()).isEqualTo("21");
     assertThat(content.getPath()).isEqualTo("bin");
     assertThat(content.getContentType()).isEqualTo("application/octet-stream");
+    assertThat(content.isBinary()).isTrue();
     assertThat(content.getContent()).isNull();
     assertThat(content.getCodingLanguage()).isNull();
   }

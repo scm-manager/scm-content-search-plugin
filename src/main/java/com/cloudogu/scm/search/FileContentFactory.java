@@ -49,7 +49,7 @@ public class FileContentFactory {
     if (contentType.isText()) {
       return createFromText(repositoryService, revision, path, contentType);
     }
-    return FileContent.binary(revision, path, contentType);
+    return new FileContent(revision, path, contentType);
   }
 
   private FileContent createFromText(RepositoryService repositoryService, String revision, String path, ContentType contentType) throws IOException {
@@ -65,13 +65,13 @@ public class FileContentFactory {
           ByteArrayOutputStream output = new ByteArrayOutputStream();
           output.write(buffer);
           ByteStreams.copy(content, output);
-          return FileContent.text(revision, path, moreAccurateContentType, output.toString());
+          return new FileContent(revision, path, moreAccurateContentType, output.toString());
         } else {
-          return FileContent.binary(revision, path, moreAccurateContentType);
+          return new FileContent(revision, path, moreAccurateContentType);
         }
       }
 
-      return FileContent.binary(revision, path, contentType);
+      return new FileContent(revision, path, contentType);
     }
   }
 

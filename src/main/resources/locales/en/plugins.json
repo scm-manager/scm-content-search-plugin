@@ -1,6 +1,9 @@
 {
-  "scm-code-search-plugin": {
-
+  "scm-content-search-plugin": {
+    "hit": {
+      "binary": "Content could not be displayed because the file is binary.",
+      "empty": "Content could not be displayed because the file is empty."
+    }
   },
   "search": {
     "types": {

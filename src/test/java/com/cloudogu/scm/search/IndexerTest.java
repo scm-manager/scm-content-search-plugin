@@ -92,10 +92,10 @@ class IndexerTest {
   void shouldStore() throws IOException {
     Index<FileContent> index = mockIndex();
 
-    FileContent a = FileContent.binary("21", "a", contentType());
+    FileContent a = new FileContent("21", "a", contentType());
     when(fileContentFactory.create(repositoryService, "42", "a")).thenReturn(a);
 
-    FileContent b = FileContent.binary("42", "b", contentType());
+    FileContent b = new FileContent("42", "b", contentType());
     when(fileContentFactory.create(repositoryService, "42", "b")).thenReturn(b);
 
     indexer.store("42", Arrays.asList("a", "b"));

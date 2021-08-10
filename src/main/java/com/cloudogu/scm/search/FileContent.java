@@ -58,23 +58,24 @@ public class FileContent {
   @Indexed(type = Indexed.Type.STORED_ONLY)
   private final String contentType;
 
+  @Indexed(type = Indexed.Type.STORED_ONLY)
+  private final boolean binary;
+
   @Nullable
   @Indexed(type = Indexed.Type.STORED_ONLY)
   private final String codingLanguage;
 
-  private FileContent(String revision, String path, ContentType contentType, @Nullable String content) {
+  public FileContent(String revision, String path, ContentType contentType) {
+    this(revision, path, contentType, null);
+  }
+
+  public FileContent(String revision, String path, ContentType contentType, @Nullable String content) {
     this.revision = revision;
     this.path = path;
     this.contentType = contentType.getRaw();
+    this.binary = !contentType.isText();
     this.codingLanguage = contentType.getLanguage().orElse(null);
     this.content = content;
   }
 
-  static FileContent binary(String revision, String path, ContentType contentType) {
-    return new FileContent(revision, path, contentType, null);
-  }
-
-  static FileContent text(String revision, String path, ContentType contentType, String content) {
-    return new FileContent(revision, path, contentType, content);
-  }
 }
