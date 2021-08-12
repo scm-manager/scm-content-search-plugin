@@ -21,26 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.cloudogu.scm.search;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import sonia.scm.xml.XmlInstantAdapter;
 
-plugins {
-  id 'org.scm-manager.smp' version '0.8.5'
-}
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.time.Instant;
 
-dependencies {
+@Data
+@XmlRootElement
+@NoArgsConstructor
+@AllArgsConstructor
+@XmlAccessorType(XmlAccessType.FIELD)
+public class IndexStatus {
 
-}
+  static final String EMPTY = "__empty";
 
-scmPlugin {
-  scmVersion = "2.22.1-SNAPSHOT"
-  displayName = "Content Search"
-  description = "Enable search for content"
+  private String revision;
+  @XmlJavaTypeAdapter(XmlInstantAdapter.class)
+  private Instant lastUpdate;
+  private int version;
 
-  author = "Cloudogu GmbH"
-  category = "Search"
-
-  run {
-    loggingConfiguration = 'src/main/conf/logging.xml'
+  public boolean isEmpty() {
+    return EMPTY.equals(revision);
   }
 
 }

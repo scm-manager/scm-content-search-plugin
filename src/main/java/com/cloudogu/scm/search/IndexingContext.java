@@ -22,25 +22,45 @@
  * SOFTWARE.
  */
 
+package com.cloudogu.scm.search;
 
-plugins {
-  id 'org.scm-manager.smp' version '0.8.5'
-}
+import sonia.scm.repository.Repository;
+import sonia.scm.repository.api.RepositoryService;
 
-dependencies {
+class IndexingContext {
 
-}
+  private final RepositoryService repositoryService;
+  private final IndexStatusStore indexStatusStore;
+  private final Indexer indexer;
 
-scmPlugin {
-  scmVersion = "2.22.1-SNAPSHOT"
-  displayName = "Content Search"
-  description = "Enable search for content"
+  IndexingContext(RepositoryService repositoryService, IndexStatusStore indexStatusStore, Indexer indexer) {
+    this.repositoryService = repositoryService;
+    this.indexStatusStore = indexStatusStore;
+    this.indexer = indexer;
+  }
 
-  author = "Cloudogu GmbH"
-  category = "Search"
+  public Repository getRepository() {
+    return repositoryService.getRepository();
+  }
 
-  run {
-    loggingConfiguration = 'src/main/conf/logging.xml'
+  public Indexer getIndexer() {
+    return indexer;
+  }
+
+  public IndexStatusStore getIndexStatusStore() {
+    return indexStatusStore;
+  }
+
+  public UpdatePathCollector getUpdatePathCollector() {
+    return new UpdatePathCollector(repositoryService);
+  }
+
+  public RevisionPathCollector getRevisionPathCollector() {
+    return new RevisionPathCollector(repositoryService);
+  }
+
+  public LatestRevisionResolver getLatestRevisionResolver() {
+    return new LatestRevisionResolver(repositoryService, new DefaultBranchResolver(repositoryService));
   }
 
 }

@@ -22,25 +22,27 @@
  * SOFTWARE.
  */
 
+package com.cloudogu.scm.search;
 
-plugins {
-  id 'org.scm-manager.smp' version '0.8.5'
-}
+import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.search.SearchEngine;
 
-dependencies {
+import javax.inject.Inject;
 
-}
+@SuppressWarnings("UnstableApiUsage")
+public class IndexerFactory {
 
-scmPlugin {
-  scmVersion = "2.22.1-SNAPSHOT"
-  displayName = "Content Search"
-  description = "Enable search for content"
+  private final SearchEngine searchEngine;
+  private final FileContentFactory contentFactory;
 
-  author = "Cloudogu GmbH"
-  category = "Search"
+  @Inject
+  public IndexerFactory(SearchEngine searchEngine, FileContentFactory contentFactory) {
+    this.searchEngine = searchEngine;
+    this.contentFactory = contentFactory;
+  }
 
-  run {
-    loggingConfiguration = 'src/main/conf/logging.xml'
+  public Indexer create(RepositoryService repositoryService) {
+    return new Indexer(searchEngine, contentFactory, repositoryService);
   }
 
 }

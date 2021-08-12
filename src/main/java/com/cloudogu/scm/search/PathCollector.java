@@ -22,20 +22,13 @@
  * SOFTWARE.
  */
 
-package com.cloudogu.scm.codesearch;
+package com.cloudogu.scm.search;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 
-@Path("v2/sample")
-class SampleResource {
+public interface PathCollector {
 
-  @GET
-  @Produces(MediaType.TEXT_PLAIN)
-  public String sample() {
-    return "Sample";
-  }
+  Collection<String> getPathToStore();
+  Collection<String> getPathToDelete();
 
 }

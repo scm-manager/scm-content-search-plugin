@@ -22,10 +22,23 @@
  * SOFTWARE.
  */
 
-describe("frontend unit tests", () => {
+package com.cloudogu.scm.search;
 
-  it("some test", () => {
-    expect( 21 * 2 ).toBe(42);
-  });
+import sonia.scm.repository.api.RepositoryService;
 
-});
+import javax.inject.Inject;
+
+public class IndexingContextFactory {
+
+  private final IndexStatusStore indexStatusStore;
+
+  @Inject
+  public IndexingContextFactory(IndexStatusStore indexStatusStore) {
+    this.indexStatusStore = indexStatusStore;
+  }
+
+  public IndexingContext create(RepositoryService repositoryService, Indexer indexer) {
+    return new IndexingContext(repositoryService, indexStatusStore, indexer);
+  }
+
+}

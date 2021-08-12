@@ -4,10 +4,10 @@
   </a>
 </p>
 <h1 align="center">
-  Code Search
+  Content Search
 </h1>
 
-Enable CodeSearch for SCM-Manager
+Enable content search for SCM-Manager
 
 ## Usage
 

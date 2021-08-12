@@ -23,5 +23,6 @@
  */
 
 import { binder } from "@scm-manager/ui-extensions";
+import ContentHitRenderer from "./ContentHitRenderer";
 
-binder.bind("", "");
+binder.bind("search.hit.content.renderer", ContentHitRenderer);

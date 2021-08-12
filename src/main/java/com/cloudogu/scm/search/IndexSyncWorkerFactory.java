@@ -22,25 +22,23 @@
  * SOFTWARE.
  */
 
+package com.cloudogu.scm.search;
 
-plugins {
-  id 'org.scm-manager.smp' version '0.8.5'
-}
+import sonia.scm.repository.api.RepositoryService;
 
-dependencies {
+import javax.inject.Inject;
 
-}
+public class IndexSyncWorkerFactory {
 
-scmPlugin {
-  scmVersion = "2.22.1-SNAPSHOT"
-  displayName = "Content Search"
-  description = "Enable search for content"
+  private final IndexingContextFactory indexingContextFactory;
 
-  author = "Cloudogu GmbH"
-  category = "Search"
+  @Inject
+  public IndexSyncWorkerFactory(IndexingContextFactory indexingContextFactory) {
+    this.indexingContextFactory = indexingContextFactory;
+  }
 
-  run {
-    loggingConfiguration = 'src/main/conf/logging.xml'
+  public IndexSyncWorker create(RepositoryService repositoryService, Indexer indexer) {
+    return new IndexSyncWorker(indexingContextFactory.create(repositoryService, indexer));
   }
 
 }

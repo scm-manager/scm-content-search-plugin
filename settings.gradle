@@ -22,4 +22,4 @@
  * SOFTWARE.
  */
 
-rootProject.name = 'scm-code-search-plugin'
+rootProject.name = 'scm-content-search-plugin'
