@@ -8,8 +8,35 @@
   "search": {
     "types": {
       "content": {
+        "title": "Content",
         "subtitle": "Content",
-        "navItem": "Content"
+        "navItem": "Content",
+        "fields": {
+          "path": {
+            "exampleValue": "scm-core/src/main/java/App.java",
+            "hints": "Path of the file in the repository"
+          },
+          "filename": {
+            "exampleValue": "App.java",
+            "hints": "File name including extension"
+          },
+          "extension": {
+            "exampleValue": "java",
+            "hints": "Extension of the file"
+          },
+          "content": {
+            "hints": "Content of the file"
+          }
+        },
+        "examples": [{
+          "query": "filename:README.md AND content:ldap",
+          "description": "If you search for a word and you search that a specific file contains it.",
+          "explanation": "queries all files with the name \"README.md\" for the word \"ldap\"."
+        }, {
+          "query": "(extension:gradle OR filename:pom.xml) AND content:guava",
+          "description": "Searching for a word in all files with a specific extension or filename",
+          "explanation": "queries all files with the extension \"gradle\" or with the filename \"pom.xml\" for the word \"guava\"."
+        }]
       }
     }
   }
