@@ -23,12 +23,15 @@
  */
 package com.cloudogu.scm.search;
 
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import lombok.Getter;
 import sonia.scm.io.ContentType;
 import sonia.scm.search.Indexed;
 import sonia.scm.search.IndexedType;
 
 import javax.annotation.Nullable;
+import java.nio.file.Paths;
 
 @Getter
 @IndexedType("content")
@@ -46,6 +49,13 @@ public class FileContent {
     analyzer = Indexed.Analyzer.PATH
   )
   private final String path;
+
+  @Indexed(analyzer = Indexed.Analyzer.PATH)
+  private final String filename;
+
+  @Nullable
+  @Indexed(type = Indexed.Type.SEARCHABLE)
+  private final String extension;
 
   @Nullable
   @Indexed(
@@ -72,10 +82,20 @@ public class FileContent {
   public FileContent(String revision, String path, ContentType contentType, @Nullable String content) {
     this.revision = revision;
     this.path = path;
+    this.filename = fileName(path);
+    this.extension = extension(filename);
     this.contentType = contentType.getRaw();
     this.binary = !contentType.isText();
     this.codingLanguage = contentType.getLanguage().orElse(null);
     this.content = content;
+  }
+
+  private String fileName(String path) {
+    return Paths.get(path).getFileName().toString();
+  }
+
+  private String extension(String fileName) {
+    return Strings.emptyToNull(Files.getFileExtension(fileName));
   }
 
 }

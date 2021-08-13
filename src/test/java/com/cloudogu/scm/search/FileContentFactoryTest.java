@@ -24,6 +24,8 @@
 
 package com.cloudogu.scm.search;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -134,6 +136,42 @@ class FileContentFactoryTest {
     assertThat(content.getContent()).isNull();
     assertThat(content.getCodingLanguage()).isNull();
   }
+
+  @Nested
+  class FilenameAndExtensionTests {
+
+    @BeforeEach
+    void setUp() {
+      ContentType contentType = mockContentType(true, "application/octet-stream");
+      when(contentTypeResolver.resolve(any())).thenReturn(contentType);
+    }
+
+    @Test
+    void shouldStoreFileName() throws IOException {
+      FileContent content = fileContentFactory.create(repositoryService, "42", "Dockerfile");
+      assertThat(content.getFilename()).isEqualTo("Dockerfile");
+    }
+
+    @Test
+    void shouldExtractFileNameFromPath() throws IOException {
+      FileContent content = fileContentFactory.create(repositoryService, "21", "scm-plugins/scm-git-plugin/README");
+      assertThat(content.getFilename()).isEqualTo("README");
+    }
+
+    @Test
+    void shouldExtractFileExtension() throws IOException {
+      FileContent content = fileContentFactory.create(repositoryService, "21", "build.gradle");
+      assertThat(content.getExtension()).isEqualTo("gradle");
+    }
+
+    @Test
+    void shouldReturnNullForFilesWithoutExtension() throws IOException {
+      FileContent content = fileContentFactory.create(repositoryService, "21", "Vagrantfile");
+      assertThat(content.getExtension()).isNull();
+    }
+
+  }
+
 
   private ContentType mockContentType(boolean isText, String raw) {
     return mockContentType(isText, raw, null);
