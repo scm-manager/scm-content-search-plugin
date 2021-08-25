@@ -26,6 +26,9 @@ package com.cloudogu.scm.search;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,11 +37,13 @@ import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryTestData;
+import sonia.scm.search.SearchEngine;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -46,6 +51,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("UnstableApiUsage")
 @ExtendWith(MockitoExtension.class)
 class IndexListenerTest {
 
@@ -55,11 +61,14 @@ class IndexListenerTest {
   @Mock
   private RepositoryManager repositoryManager;
 
-  @Mock
-  private IndexSyncer indexSyncer;
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private SearchEngine searchEngine;
 
   @InjectMocks
   private IndexListener indexListener;
+
+  @Captor
+  private ArgumentCaptor<IndexerTask> taskCaptor;
 
   @Test
   void shouldTriggerUpdateOnPostReceiveRepositoryHookEvent() {
@@ -70,7 +79,16 @@ class IndexListenerTest {
 
     indexListener.handle(event);
 
-    verify(indexSyncer).ensureIndexIsUpToDate(heartOfGold);
+    assertUpdate(heartOfGold);
+  }
+
+  private void assertUpdate(Repository repository) {
+    verify(searchEngine.forType(FileContent.class).forResource(repository)).update(
+      taskCaptor.capture()
+    );
+
+    IndexerTask task = taskCaptor.getValue();
+    assertThat(task.getRepository()).isSameAs(repository);
   }
 
   @Test
@@ -82,7 +100,7 @@ class IndexListenerTest {
 
     indexListener.handle(event);
 
-    verify(indexSyncer).ensureIndexIsUpToDate(heartOfGold);
+    assertUpdate(heartOfGold);
   }
 
   @Test
@@ -96,7 +114,7 @@ class IndexListenerTest {
     }).when(administrationContext).runAsAdmin(any(PrivilegedAction.class));
 
     indexListener.contextInitialized(null);
-    verify(indexSyncer, timeout(1000L)).ensureIndexIsUpToDate(heartOfGold);
+    assertUpdate(heartOfGold);
   }
 
 }

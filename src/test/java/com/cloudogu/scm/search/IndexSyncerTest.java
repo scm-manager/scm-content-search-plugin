@@ -36,6 +36,7 @@ import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.repository.api.Command;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
+import sonia.scm.search.Index;
 
 import java.io.IOException;
 
@@ -64,6 +65,9 @@ class IndexSyncerTest {
   @InjectMocks
   private IndexSyncer indexSyncer;
 
+  @Mock
+  private Index<FileContent> index;
+
   private final Repository repository = RepositoryTestData.createHeartOfGold();
 
   @BeforeEach
@@ -72,28 +76,28 @@ class IndexSyncerTest {
   }
 
   @Test
-  void shouldNotOpenIndexIfLogCommandIsNotSupported() {
+  void shouldNotIndexIfLogCommandIsNotSupported() {
     support(false, true, true);
 
-    indexSyncer.ensureIndexIsUpToDate(repository);
+    indexSyncer.ensureIndexIsUpToDate(index, repository);
 
     verifyNoInteractions(indexerFactory);
   }
 
   @Test
-  void shouldNotOpenIndexIfBrowseCommandIsNotSupported() {
+  void shouldNotIndexIfBrowseCommandIsNotSupported() {
     support(true, false, true);
 
-    indexSyncer.ensureIndexIsUpToDate(repository);
+    indexSyncer.ensureIndexIsUpToDate(index, repository);
 
     verifyNoInteractions(indexerFactory);
   }
 
   @Test
-  void shouldNotOpenIndexIfFeatureIsNotSupported() {
+  void shouldNotIndexIfFeatureIsNotSupported() {
     support(true, true, false);
 
-    indexSyncer.ensureIndexIsUpToDate(repository);
+    indexSyncer.ensureIndexIsUpToDate(index, repository);
 
     verifyNoInteractions(indexerFactory);
   }
@@ -101,39 +105,22 @@ class IndexSyncerTest {
   @Test
   void shouldCallWorker() throws IOException {
     Indexer indexer = mock(Indexer.class);
-    when(indexerFactory.create(repositoryService)).thenReturn(indexer);
+    when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
     IndexSyncWorker worker = mock(IndexSyncWorker.class);
     when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
 
     support(true, true, true);
 
-    indexSyncer.ensureIndexIsUpToDate(repository);
+    indexSyncer.ensureIndexIsUpToDate(index, repository);
 
     verify(worker).ensureIndexIsUpToDate();
   }
 
   @Test
-  void shouldCloseIndexerOnException() throws IOException {
-    Indexer indexer = mock(Indexer.class);
-    when(indexerFactory.create(repositoryService)).thenReturn(indexer);
-
-    IndexSyncWorker worker = mock(IndexSyncWorker.class);
-    when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
-
-    doThrow(new IOException("fail")).when(worker).ensureIndexIsUpToDate();
-
-    support(true, true, true);
-
-    indexSyncer.ensureIndexIsUpToDate(repository);
-
-    verify(indexer).close();
-  }
-
-  @Test
   void shouldCloseRepositoryServiceOnException() throws IOException {
     Indexer indexer = mock(Indexer.class);
-    when(indexerFactory.create(repositoryService)).thenReturn(indexer);
+    when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
     IndexSyncWorker worker = mock(IndexSyncWorker.class);
     when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
@@ -142,7 +129,7 @@ class IndexSyncerTest {
 
     support(true, true, true);
 
-    indexSyncer.ensureIndexIsUpToDate(repository);
+    indexSyncer.ensureIndexIsUpToDate(index, repository);
 
     verify(repositoryService).close();
   }

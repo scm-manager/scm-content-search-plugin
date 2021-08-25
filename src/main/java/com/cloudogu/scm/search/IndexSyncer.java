@@ -32,10 +32,12 @@ import sonia.scm.repository.Repository;
 import sonia.scm.repository.api.Command;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.repository.api.RepositoryServiceFactory;
+import sonia.scm.search.Index;
 
 import javax.inject.Inject;
 import java.io.IOException;
 
+@SuppressWarnings("UnstableApiUsage")
 public class IndexSyncer {
 
   private static final Logger LOG = LoggerFactory.getLogger(IndexSyncer.class);
@@ -51,10 +53,10 @@ public class IndexSyncer {
     this.indexSyncWorkerFactory = indexSyncWorkerFactory;
   }
 
-  public void ensureIndexIsUpToDate(Repository repository) {
+  public void ensureIndexIsUpToDate(Index<FileContent> index, Repository repository) {
     try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
       if (isSupported(repositoryService)) {
-       ensureIndexIsUpToDate(repositoryService);
+       ensureIndexIsUpToDate(index, repositoryService);
       } else {
         LOG.warn("repository {} could not index, because it does not support combined modifications", repository);
       }
@@ -69,9 +71,10 @@ public class IndexSyncer {
       && repositoryService.isSupported(Feature.MODIFICATIONS_BETWEEN_REVISIONS);
   }
 
-  private void ensureIndexIsUpToDate(RepositoryService repositoryService) throws IOException {
+  private void ensureIndexIsUpToDate(Index<FileContent> index, RepositoryService repositoryService) throws IOException {
     Stopwatch sw = Stopwatch.createStarted();
-    try (Indexer indexer = indexerFactory.create(repositoryService)) {
+    Indexer indexer = indexerFactory.create(index, repositoryService);
+    try {
       IndexSyncWorker worker = indexSyncWorkerFactory.create(repositoryService, indexer);
       worker.ensureIndexIsUpToDate();
     } finally {

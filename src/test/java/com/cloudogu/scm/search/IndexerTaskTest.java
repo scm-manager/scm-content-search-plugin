@@ -24,23 +24,46 @@
 
 package com.cloudogu.scm.search;
 
-import sonia.scm.repository.api.RepositoryService;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.search.Index;
 
-import javax.inject.Inject;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("UnstableApiUsage")
-public class IndexerFactory {
+class IndexerTaskTest {
 
-  private final FileContentFactory contentFactory;
+  @Mock
+  private IndexSyncer syncer;
 
-  @Inject
-  public IndexerFactory(FileContentFactory contentFactory) {
-    this.contentFactory = contentFactory;
-  }
+  @Mock
+  private Index<FileContent> index;
 
-  public Indexer create(Index<FileContent> index, RepositoryService repositoryService) {
-    return new Indexer(contentFactory, index, repositoryService);
+  @Test
+  void shouldInjectDependencyAndDelegate() {
+    Injector injector = Guice.createInjector(new AbstractModule() {
+      @Override
+      protected void configure() {
+        bind(IndexSyncer.class).toInstance(syncer);
+      }
+    });
+
+    Repository heartOfGold = RepositoryTestData.createHeartOfGold();
+
+    IndexerTask task = new IndexerTask(heartOfGold);
+    injector.injectMembers(task);
+
+    task.update(index);
+
+    verify(syncer).ensureIndexIsUpToDate(index, heartOfGold);
   }
 
 }

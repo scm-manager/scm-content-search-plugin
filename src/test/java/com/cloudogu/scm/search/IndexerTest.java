@@ -27,7 +27,6 @@ package com.cloudogu.scm.search;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -37,7 +36,6 @@ import sonia.scm.repository.RepositoryTestData;
 import sonia.scm.repository.api.RepositoryService;
 import sonia.scm.search.Id;
 import sonia.scm.search.Index;
-import sonia.scm.search.SearchEngine;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -52,9 +50,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class IndexerTest {
 
-  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-  private SearchEngine searchEngine;
-
   @Mock
   private RepositoryService repositoryService;
 
@@ -68,30 +63,31 @@ class IndexerTest {
 
   private final Repository repository = RepositoryTestData.createHeartOfGold();
 
+  @Mock
+  private Index<FileContent> index;
+
   @BeforeEach
   void setUp() {
     when(repositoryService.getRepository()).thenReturn(repository);
-    indexer = indexerFactory.create(repositoryService);
+    indexer = indexerFactory.create(index, repositoryService);
   }
 
   @Test
-  void shouldNotOpenIndexForEmptyStores() throws IOException {
+  void shouldNotIndexForEmptyStores() throws IOException {
     indexer.store("4211", Collections.emptyList());
 
-    verifyNoInteractions(searchEngine);
+    verifyNoInteractions(index);
   }
 
   @Test
   void shouldNotOpenIndexForEmptyDeletes() {
     indexer.delete(Collections.emptyList());
 
-    verifyNoInteractions(searchEngine);
+    verifyNoInteractions(index);
   }
 
   @Test
   void shouldStore() throws IOException {
-    Index<FileContent> index = mockIndex();
-
     FileContent a = new FileContent("21", "a", contentType());
     when(fileContentFactory.create(repositoryService, "42", "a")).thenReturn(a);
 
@@ -106,10 +102,8 @@ class IndexerTest {
 
   @Test
   void shouldDelete() {
-    Index<FileContent> index = mockIndex();
-
-    Index.ByTypeDeleter deleter = mock(Index.ByTypeDeleter.class);
-    when(index.delete().byType()).thenReturn(deleter);
+    Index.Deleter deleter = mock(Index.Deleter.class);
+    when(index.delete()).thenReturn(deleter);
 
     indexer.delete(Arrays.asList("a", "b"));
 
@@ -119,40 +113,12 @@ class IndexerTest {
 
   @Test
   void shouldDeleteAll() {
-    Index<FileContent> index = mockIndex();
-
-    Index.ByTypeDeleter deleter = mock(Index.ByTypeDeleter.class);
-    when(index.delete().byType()).thenReturn(deleter);
+    Index.Deleter deleter = mock(Index.Deleter.class);
+    when(index.delete()).thenReturn(deleter);
 
     indexer.deleteAll();
 
     verify(deleter).byRepository(repository.getId());
-  }
-
-  @Test
-  void shouldNotCloseIfIndexIsNotOpen() {
-    indexer.close();
-
-    verifyNoInteractions(searchEngine);
-  }
-
-  @Test
-  void shouldCloseIndex() {
-    Index<FileContent> index = mockIndex();
-    Index.ByTypeDeleter deleter = mock(Index.ByTypeDeleter.class);
-    when(index.delete().byType()).thenReturn(deleter);
-    indexer.deleteAll();
-
-    indexer.close();
-
-    verify(index).close();
-  }
-
-  @SuppressWarnings("unchecked")
-  private Index<FileContent> mockIndex() {
-    Index<FileContent> index = mock(Index.class, Answers.RETURNS_DEEP_STUBS);
-    when(searchEngine.forType(FileContent.class).getOrCreate()).thenReturn(index);
-    return index;
   }
 
   private ContentType contentType() {

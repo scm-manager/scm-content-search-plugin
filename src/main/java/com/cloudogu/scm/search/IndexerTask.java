@@ -24,23 +24,36 @@
 
 package com.cloudogu.scm.search;
 
-import sonia.scm.repository.api.RepositoryService;
+import com.google.common.annotations.VisibleForTesting;
+import sonia.scm.repository.Repository;
 import sonia.scm.search.Index;
+import sonia.scm.search.SerializableIndexTask;
 
 import javax.inject.Inject;
 
 @SuppressWarnings("UnstableApiUsage")
-public class IndexerFactory {
+public class IndexerTask implements SerializableIndexTask<FileContent> {
 
-  private final FileContentFactory contentFactory;
+  private final Repository repository;
+
+  private IndexSyncer syncer;
+
+  public IndexerTask(Repository repository) {
+    this.repository = repository;
+  }
 
   @Inject
-  public IndexerFactory(FileContentFactory contentFactory) {
-    this.contentFactory = contentFactory;
+  public void setSyncer(IndexSyncer syncer) {
+    this.syncer = syncer;
   }
 
-  public Indexer create(Index<FileContent> index, RepositoryService repositoryService) {
-    return new Indexer(contentFactory, index, repositoryService);
+  @VisibleForTesting
+  Repository getRepository() {
+    return repository;
   }
 
+  @Override
+  public void update(Index<FileContent> index) {
+    syncer.ensureIndexIsUpToDate(index, repository);
+  }
 }

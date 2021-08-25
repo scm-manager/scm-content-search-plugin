@@ -31,8 +31,8 @@ import sonia.scm.repository.DefaultBranchChangedEvent;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
+import sonia.scm.search.SearchEngine;
 import sonia.scm.web.security.AdministrationContext;
-import sonia.scm.web.security.PrivilegedAction;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,30 +41,36 @@ import javax.servlet.ServletContextListener;
 
 @Extension
 @Singleton
+@SuppressWarnings("UnstableApiUsage")
 public class IndexListener implements ServletContextListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(IndexListener.class);
 
   private final AdministrationContext administrationContext;
   private final RepositoryManager repositoryManager;
-  private final IndexSyncer indexSyncer;
+  private final SearchEngine searchEngine;
 
   @Inject
-  public IndexListener(AdministrationContext administrationContext, RepositoryManager repositoryManager, IndexSyncer indexSyncer) {
+  public IndexListener(AdministrationContext administrationContext, RepositoryManager repositoryManager, SearchEngine searchEngine) {
     this.administrationContext = administrationContext;
     this.repositoryManager = repositoryManager;
-    this.indexSyncer = indexSyncer;
+    this.searchEngine = searchEngine;
   }
 
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
-    administrationContext.runAsAdmin(new BootstrapIndexer(repositoryManager, indexSyncer));
+    administrationContext.runAsAdmin(() -> {
+      for (Repository repository : repositoryManager.getAll()) {
+        LOG.debug("startup check if index of repository {}, requires update", repository);
+        submit(repository);
+      }
+    });
   }
 
   @Subscribe
   public void handle(PostReceiveRepositoryHookEvent event) {
     LOG.debug("received hook event for repository {}, update index if necessary", event.getRepository());
-    indexSyncer.ensureIndexIsUpToDate(event.getRepository());
+    submit(event.getRepository());
   }
 
   @Subscribe
@@ -73,32 +79,17 @@ public class IndexListener implements ServletContextListener {
       "received default branch changed event for repository {}, update index if necessary",
       event.getRepository()
     );
-    indexSyncer.ensureIndexIsUpToDate(event.getRepository());
+    submit(event.getRepository());
+  }
+
+  private void submit(Repository repository) {
+    searchEngine.forType(FileContent.class)
+      .forResource(repository)
+      .update(new IndexerTask(repository));
   }
 
   @Override
   public void contextDestroyed(ServletContextEvent servletContextEvent) {
     // nothing to destroy here
-  }
-
-  private static class BootstrapIndexer implements PrivilegedAction {
-
-    private final RepositoryManager repositoryManager;
-    private final IndexSyncer indexSyncer;
-
-    public BootstrapIndexer(RepositoryManager repositoryManager, IndexSyncer indexSyncer) {
-      this.repositoryManager = repositoryManager;
-      this.indexSyncer = indexSyncer;
-    }
-
-    @Override
-    public void run() {
-      new Thread(() -> {
-        for (Repository repository : repositoryManager.getAll()) {
-          LOG.debug("startup check if index of repository {}, requires update", repository);
-          indexSyncer.ensureIndexIsUpToDate(repository);
-        }
-      }, "BootstrapContentIndexer").start();
-    }
   }
 }
