@@ -27,6 +27,7 @@ package com.cloudogu.scm.search;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -63,7 +64,7 @@ class IndexerTest {
 
   private final Repository repository = RepositoryTestData.createHeartOfGold();
 
-  @Mock
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   private Index<FileContent> index;
 
   @BeforeEach
@@ -96,29 +97,30 @@ class IndexerTest {
 
     indexer.store("42", Arrays.asList("a", "b"));
 
-    verify(index).store(Id.of("a").withRepository(repository), "repository:pull:" + repository.getId(), a);
-    verify(index).store(Id.of("b").withRepository(repository), "repository:pull:" + repository.getId(), b);
+    verify(index).store(id("a"), "repository:pull:" + repository.getId(), a);
+    verify(index).store(id("b"), "repository:pull:" + repository.getId(), b);
+  }
+
+  private Id<FileContent> id(String a) {
+    return Id.of(FileContent.class, a).and(Repository.class, repository);
   }
 
   @Test
   void shouldDelete() {
-    Index.Deleter deleter = mock(Index.Deleter.class);
+    Index.Deleter<FileContent> deleter = mock(Index.Deleter.class);
     when(index.delete()).thenReturn(deleter);
 
     indexer.delete(Arrays.asList("a", "b"));
 
-    verify(deleter).byId(Id.of("a").withRepository(repository));
-    verify(deleter).byId(Id.of("b").withRepository(repository));
+    verify(deleter).byId(id("a"));
+    verify(deleter).byId(id("b"));
   }
 
   @Test
   void shouldDeleteAll() {
-    Index.Deleter deleter = mock(Index.Deleter.class);
-    when(index.delete()).thenReturn(deleter);
-
     indexer.deleteAll();
 
-    verify(deleter).byRepository(repository.getId());
+    verify(index.delete().by(Repository.class, repository)).execute();
   }
 
   private ContentType contentType() {

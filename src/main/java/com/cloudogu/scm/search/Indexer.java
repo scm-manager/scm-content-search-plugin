@@ -58,7 +58,7 @@ class Indexer {
     if (paths.isEmpty()) {
       return;
     }
-    
+
     for (String path : paths) {
       LOG.trace("store {} to index", path);
       FileContent fileContent = fileContentFactory.create(repositoryService, revision, path);
@@ -70,7 +70,7 @@ class Indexer {
     if (paths.isEmpty()) {
       return;
     }
-    Index.Deleter deleter = index.delete();
+    Index.Deleter<FileContent> deleter = index.delete();
     for (String path : paths) {
       LOG.trace("delete {} from index", path);
       deleter.byId(id(path));
@@ -78,16 +78,15 @@ class Indexer {
   }
 
   void deleteAll() {
-    Index.Deleter deleter = index.delete();
-    deleter.byRepository(repository.getId());
+    index.delete().by(Repository.class, repository).execute();
   }
 
   private String permission() {
     return RepositoryPermissions.pull(repository).asShiroString();
   }
 
-  private Id id(String path) {
-    return Id.of(path).withRepository(repository);
+  private Id<FileContent> id(String path) {
+    return Id.of(FileContent.class, path).and(Repository.class, repository);
   }
 
 }
