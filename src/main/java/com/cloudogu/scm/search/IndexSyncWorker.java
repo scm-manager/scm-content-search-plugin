@@ -62,6 +62,8 @@ class IndexSyncWorker {
           repository, indexStatus.getVersion(), FileContent.VERSION
         );
         reIndex();
+      } else if (indexStatus.isEmpty()) {
+        reIndex();
       } else {
         ensureIndexIsUpToDate(indexStatus.getRevision());
       }

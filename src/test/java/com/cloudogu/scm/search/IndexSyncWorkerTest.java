@@ -147,6 +147,23 @@ class IndexSyncWorkerTest {
   }
 
   @Test
+  void shouldReIndexIfStatusIsEmpty() throws IOException {
+    statusStore.empty(repository);
+
+    List<String> pathToStore = Arrays.asList("a", "b");
+    when(revisionPathCollector.getPathToStore()).thenReturn(pathToStore);
+    when(latestRevisionResolver.resolve()).thenReturn(Optional.of("42"));
+
+    worker.ensureIndexIsUpToDate();
+
+    verify(indexer).deleteAll();
+    verify(revisionPathCollector).collect("42");
+    verify(indexer).store("42", pathToStore);
+    assertThat(statusStore.get(repository))
+      .hasValueSatisfying(status -> assertThat(status.getRevision()).isEqualTo("42"));
+  }
+
+  @Test
   void shouldDoNothingIfIndexIsUpToDate() throws IOException {
     statusStore.update(repository, "42");
     when(latestRevisionResolver.resolve()).thenReturn(Optional.of("42"));
