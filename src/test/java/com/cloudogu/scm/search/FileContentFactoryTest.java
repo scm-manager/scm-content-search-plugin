@@ -63,7 +63,7 @@ class FileContentFactoryTest {
 
   @Test
   void shouldCreateBinaryContent() throws IOException {
-    ContentType contentType = mockContentType(false, "image/png");
+    ContentType contentType = mockContentType(false, "image", "png");
 
     when(contentTypeResolver.resolve("alpaka.png")).thenReturn(contentType);
 
@@ -78,7 +78,7 @@ class FileContentFactoryTest {
 
   @Test
   void shouldReturnEmptyWithEmptyBuffer() throws IOException {
-    ContentType contentType = mockContentType(true, "application/octet-stream");
+    ContentType contentType = mockContentType(true, "application", "octet-stream");
     when(contentTypeResolver.resolve("License.txt")).thenReturn(contentType);
     when(repositoryService.getCatCommand().setRevision("42").getStream("License.txt")).thenReturn(new ByteArrayInputStream(new byte[0]));
 
@@ -94,7 +94,7 @@ class FileContentFactoryTest {
 
   @Test
   void shouldReturnTextContent() throws IOException {
-    ContentType contentType = mockContentType(true, "application/octet-stream");
+    ContentType contentType = mockContentType(false, "application", "octet-stream");
     when(contentTypeResolver.resolve("App.java")).thenReturn(contentType);
 
     String contentValue ="public class App {}";
@@ -102,7 +102,7 @@ class FileContentFactoryTest {
     InputStream stream = new ByteArrayInputStream(bytes);
     when(repositoryService.getCatCommand().setRevision("42").getStream("App.java")).thenReturn(stream);
 
-    contentType = mockContentType(true, "text/java", "java");
+    contentType = mockContentType(true, "text", "java", "java");
     when(contentTypeResolver.resolve(eq("App.java"), any())).thenReturn(contentType);
 
     FileContent content = fileContentFactory.create(repositoryService, "42", "App.java");
@@ -117,14 +117,14 @@ class FileContentFactoryTest {
 
   @Test
   void shouldReturnBinaryIfMoreAccurateContentTypeIsNoLongerText() throws IOException {
-    ContentType contentType = mockContentType(true, "application/octet-stream");
+    ContentType contentType = mockContentType(true, "text", "plain");
     when(contentTypeResolver.resolve("bin")).thenReturn(contentType);
 
     byte[] bytes = new byte[]{ 0xc, 0xa, 0xf, 0xe };
     InputStream stream = new ByteArrayInputStream(bytes);
     when(repositoryService.getCatCommand().setRevision("21").getStream("bin")).thenReturn(stream);
 
-    contentType = mockContentType(false, "application/octet-stream");
+    contentType = mockContentType(false, "application", "octet-stream");
     when(contentTypeResolver.resolve(eq("bin"), any())).thenReturn(contentType);
 
     FileContent content = fileContentFactory.create(repositoryService, "21", "bin");
@@ -142,7 +142,7 @@ class FileContentFactoryTest {
 
     @BeforeEach
     void setUp() {
-      ContentType contentType = mockContentType(true, "application/octet-stream");
+      ContentType contentType = mockContentType(true, "application", "octet-stream");
       when(contentTypeResolver.resolve(any())).thenReturn(contentType);
     }
 
@@ -172,15 +172,16 @@ class FileContentFactoryTest {
 
   }
 
-
-  private ContentType mockContentType(boolean isText, String raw) {
-    return mockContentType(isText, raw, null);
+  private ContentType mockContentType(boolean isText, String primary, String secondary) {
+    return mockContentType(isText, primary, secondary, null);
   }
 
-  private ContentType mockContentType(boolean isText, String raw, String language) {
+  private ContentType mockContentType(boolean isText, String primary, String secondary, String language) {
     ContentType contentType = mock(ContentType.class);
     lenient().when(contentType.isText()).thenReturn(isText);
-    lenient().when(contentType.getRaw()).thenReturn(raw);
+    lenient().when(contentType.getRaw()).thenReturn(primary + "/" + secondary);
+    lenient().when(contentType.getPrimary()).thenReturn(primary);
+    lenient().when(contentType.getSecondary()).thenReturn(secondary);
     lenient().when(contentType.getLanguage()).thenReturn(Optional.ofNullable(language));
     return contentType;
   }

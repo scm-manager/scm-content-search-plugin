@@ -46,16 +46,18 @@ public class FileContentFactory {
 
   public FileContent create(RepositoryService repositoryService, String revision, String path) throws IOException {
     ContentType contentType = contentTypeResolver.resolve(path);
-    if (contentType.isText()) {
-      return createFromText(repositoryService, revision, path, contentType);
+    if (contentType.isText() || isBinaryDefault(contentType)) {
+      return create(repositoryService, revision, path, contentType);
     }
     return new FileContent(revision, path, contentType);
   }
 
-  private FileContent createFromText(RepositoryService repositoryService, String revision, String path, ContentType contentType) throws IOException {
-    try (InputStream content = repositoryService.getCatCommand()
-      .setRevision(revision)
-      .getStream(path)) {
+  private boolean isBinaryDefault(ContentType contentType) {
+    return "application".equals(contentType.getPrimary()) || "octet-stream".equals(contentType.getSecondary());
+  }
+
+  private FileContent create(RepositoryService repositoryService, String revision, String path, ContentType contentType) throws IOException {
+    try (InputStream content = repositoryService.getCatCommand().setRevision(revision).getStream(path)) {
 
       byte[] buffer = readHeader(content);
       if (buffer.length > 0) {
