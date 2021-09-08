@@ -32,7 +32,7 @@ dependencies {
 }
 
 scmPlugin {
-  scmVersion = "2.22.1-SNAPSHOT"
+  scmVersion = "2.23.0"
   displayName = "Content Search"
   description = "Enable search for content"
 

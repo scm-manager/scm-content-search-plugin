@@ -1764,26 +1764,26 @@
   dependencies:
     typescript "^4.3.5"
 
-"@scm-manager/ui-api@^2.22.0":
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/@scm-manager/ui-api/-/ui-api-2.22.0.tgz#5519a95e94a86bfea70f2ad350f4066fa43be72a"
-  integrity sha512-HE6EPHo8Ri9qTHz6qnYah2LWfKqx4f62fHgs3on+NqC2aW+LzqNRg+Z9FcrYDtn16LsVF9QZwRWcBdtQ2l2zLg==
+"@scm-manager/ui-api@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@scm-manager/ui-api/-/ui-api-2.23.0.tgz#971d37871f939782320201a2ca4bf7e469afba75"
+  integrity sha512-jiCdn3UfNFWPocMqP/5dUSC1I9aR/9R/zqWXgsH1tkYUI2DWGE/K6X1MuzPWlwrGaFBGzGg7/wjHYFHILUqmBQ==
   dependencies:
-    "@scm-manager/ui-types" "^2.22.0"
+    "@scm-manager/ui-types" "^2.23.0"
     fetch-mock-jest "^1.5.1"
     gitdiff-parser "^0.1.2"
     query-string "5"
     react "^17.0.1"
     react-query "^3.12.2"
 
-"@scm-manager/ui-components@^2.22.0":
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/@scm-manager/ui-components/-/ui-components-2.22.0.tgz#2880e32ae58346285284899cc5879ddd6c25cd51"
-  integrity sha512-BP3eYNZN4XA+3oxO9/O9AOPDFeIucTcUEWIcpdV/GHd4JY2zuTOp3P3CB9PRQfVPpOe6D4K0sMydJUOzZQbYvQ==
+"@scm-manager/ui-components@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@scm-manager/ui-components/-/ui-components-2.23.0.tgz#b32deaebc43b41e9127d9afe40dc56d283e49787"
+  integrity sha512-0od6/cqvfz0vx0dKULiHA44fkoTtNENhoLhTynJUbZozqQRfm52+QDdWSZj1tm9jKE6o1m6arw21Y8JGhLwO6Q==
   dependencies:
-    "@scm-manager/ui-api" "^2.22.0"
-    "@scm-manager/ui-extensions" "^2.22.0"
-    "@scm-manager/ui-types" "^2.22.0"
+    "@scm-manager/ui-api" "^2.23.0"
+    "@scm-manager/ui-extensions" "^2.23.0"
+    "@scm-manager/ui-types" "^2.23.0"
     classnames "^2.2.6"
     date-fns "^2.4.1"
     deepmerge "^4.2.2"
@@ -1809,21 +1809,21 @@
     remark-rehype "^8.0.0"
     unified "^9.2.1"
 
-"@scm-manager/ui-extensions@^2.22.0":
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/@scm-manager/ui-extensions/-/ui-extensions-2.22.0.tgz#59e13deb8e0b345f09cc4c3cef6dbed0e9621658"
-  integrity sha512-vGfuNCWAEubF+aCyRgzMFCX+x5xG0oy3/rMeOe3q8Sp2k0jkbjNjWCXx0g7hD41Tterbv0htgjZm9i/DAwtVOw==
+"@scm-manager/ui-extensions@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@scm-manager/ui-extensions/-/ui-extensions-2.23.0.tgz#87bfec5abf739435996155e8f581f1bc83a87e39"
+  integrity sha512-GLKWIVCWFGTE1CmKHf1XiKrkO7r8LRzqJe+NFxfFC4sM3DhEFfVjg09YZcWI6FShWjZWGjFvEha7Kl5uOWkcVw==
   dependencies:
-    "@scm-manager/ui-types" "^2.22.0"
+    "@scm-manager/ui-types" "^2.23.0"
     react "^17.0.1"
 
-"@scm-manager/ui-plugins@2.22.0":
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/@scm-manager/ui-plugins/-/ui-plugins-2.22.0.tgz#b8d7729725f98dd6f730bcdcca0cf57af326d224"
-  integrity sha512-fnpw7qcvjd/VmJopr6RD1E7krK7he0RZenBZ/12TKa1iB9zIBy2Z0SYh0pESDdRQhAPLOrJjKV15qMUOHK1PPQ==
+"@scm-manager/ui-plugins@2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@scm-manager/ui-plugins/-/ui-plugins-2.23.0.tgz#85db1feec8bf76a3f58189bc77801b0fd2acc220"
+  integrity sha512-kzB/41KfOK+2OUxzwEOv4LfnFTEfi/RsOFY7K9Etyii8ozdJv+H9b9hceKJyPed1RPcMR4Kdm8NaHs58VX3NAQ==
   dependencies:
-    "@scm-manager/ui-components" "^2.22.0"
-    "@scm-manager/ui-extensions" "^2.22.0"
+    "@scm-manager/ui-components" "^2.23.0"
+    "@scm-manager/ui-extensions" "^2.23.0"
     classnames "^2.2.6"
     query-string "^5.0.1"
     react "^17.0.1"
@@ -1834,10 +1834,10 @@
     redux "^4.0.0"
     styled-components "^5.1.0"
 
-"@scm-manager/ui-scripts@^2.22.0":
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/@scm-manager/ui-scripts/-/ui-scripts-2.22.0.tgz#24054de1f0ebe64a9cf1a43192bce1e51631fd43"
-  integrity sha512-po/FuM2jSYPTRCXf8egQv6R0L+/8//VZNC1gETPCbvlH5ZXk30szmHOcxnyuLpr2jhs0B+cTVqLUAWwDJzDvOQ==
+"@scm-manager/ui-scripts@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@scm-manager/ui-scripts/-/ui-scripts-2.23.0.tgz#d5e585965668b26234484f428af413a5a233c6d6"
+  integrity sha512-R1lhg9QWgW23WphdlFSANxh1EAeOd4Ev0vUcfGDxOCCJCgevNS4NWo2ZY1KF7OHjVkQIw81blWDZHM3KuoROgg==
   dependencies:
     "@pmmmwh/react-refresh-webpack-plugin" "^0.4.0"
     babel-loader "^8.0.6"
@@ -1856,10 +1856,10 @@
     webpack-dev-server "^3.10.1"
     worker-plugin "^3.2.0"
 
-"@scm-manager/ui-tests@^2.22.0":
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/@scm-manager/ui-tests/-/ui-tests-2.22.0.tgz#b7810d1dcdc43d5ca69ab1e45aaf10ece67dba66"
-  integrity sha512-XYpWJ6zx21ds+s2PkuYrOxgmZAa94/3XDz1JpwGob7qZGQm/ITDmJHiVBqw9f/wI5c7PZz4k6YZzFxqnvdGgpA==
+"@scm-manager/ui-tests@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@scm-manager/ui-tests/-/ui-tests-2.23.0.tgz#49170c2d6d7adf79adbd314cd4346150d2dcc707"
+  integrity sha512-b8+1ZWXm5T29bHqyh+uSG1dkv7bY0ytxRKk2zF5yPI97Ibpkc27hA909l7Dt+P6gHujYLbpINjfvu+JkI4W3xg==
   dependencies:
     "@wojtekmaj/enzyme-adapter-react-17" "^0.6.0"
     babel-plugin-istanbul "^6.0.0"
@@ -1870,10 +1870,10 @@
     raf "^3.4.1"
     react-test-renderer "^17.0.1"
 
-"@scm-manager/ui-types@^2.22.0":
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/@scm-manager/ui-types/-/ui-types-2.22.0.tgz#6ae6921523e34caafe874d4247d0d99f798874d9"
-  integrity sha512-iyQbC5XXmVnoY2zJX5/sGM3ppbnRzaBCOwjRqYBCswlp+ZGlLIxtoLJqNbNQkdpZNY6m7HrUiEmwY4L5c/qBgA==
+"@scm-manager/ui-types@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@scm-manager/ui-types/-/ui-types-2.23.0.tgz#be90c36c56db84bb1b4729aea0656bf5fa9645a9"
+  integrity sha512-L3qyz0Al0p2HH3xwnS6ks1bI130sZagNYSHi9hQULbWAoJhDlcd0v+HeFSe1jWww+uCTXmOPARGANBTbvsXTgg==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
@@ -12178,10 +12178,8 @@ watchpack@^1.7.4:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
