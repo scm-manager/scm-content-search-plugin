@@ -37,7 +37,7 @@ scmPlugin {
   description = "Enable search for content"
 
   author = "Cloudogu GmbH"
-  category = "Search"
+  category = "Information"
 
   run {
     loggingConfiguration = 'src/main/conf/logging.xml'
