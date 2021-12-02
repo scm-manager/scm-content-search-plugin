@@ -61,7 +61,7 @@ public class IndexSyncer {
         LOG.warn("repository {} could not index, because it does not support combined modifications", repository);
       }
     } catch (IOException e) {
-      LOG.error("failed to update index or to check if an update is required for repository {}", repository);
+      LOG.error("failed to update index or to check if an update is required for repository {}", repository, e);
     }
   }
 
