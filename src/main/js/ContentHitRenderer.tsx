@@ -65,13 +65,14 @@ const isEmpty = (hit: HitType) => {
 };
 
 const TextContent: FC<HitProps> = ({ hit }) => {
+  const language = useStringHitFieldValue(hit, "codingLanguage")
   if (isEmpty(hit)) {
     return <EmptyContent />;
   } else {
     return (
       <pre>
         <code>
-          <TextHitField hit={hit} field="content" truncateValueAt={1024}>
+          <TextHitField hit={hit} field="content" truncateValueAt={1024} syntaxHighlightingLanguage={language}>
             <EmptyContent />
           </TextHitField>
         </code>
