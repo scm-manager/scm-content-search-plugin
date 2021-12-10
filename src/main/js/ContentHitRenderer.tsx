@@ -22,21 +22,21 @@
  * SOFTWARE.
  */
 
-import React, { FC } from "react";
+import React, {FC} from "react";
 import {
   Hit,
   HitProps,
-  TextHitField,
+  isValueHitField,
   Notification,
-  useStringHitFieldValue,
-  useBooleanHitFieldValue,
   RepositoryAvatar,
-  isValueHitField
+  TextHitField,
+  useBooleanHitFieldValue,
+  useStringHitFieldValue
 } from "@scm-manager/ui-components";
-import { Repository, Hit as HitType } from "@scm-manager/ui-types";
+import {Hit as HitType, Repository} from "@scm-manager/ui-types";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import {Link} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 const Container = styled(Hit.Content)`
   overflow-x: scroll;
@@ -47,7 +47,15 @@ const FileContent = styled.div`
   border-radius: 0.25rem;
 `;
 
-const ContentMessage: FC = ({ children }) => <div className="has-background-info-light	p-4 is-size-7">{children}</div>;
+type SyntaxHighlighting = {
+  modes: {
+    ace?: string;
+    codemirror?: string;
+    prism?: string;
+  }
+}
+
+const ContentMessage: FC = ({children}) => <div className="has-background-info-light	p-4 is-size-7">{children}</div>;
 
 const BinaryContent: FC = () => {
   const [t] = useTranslation("plugins");
@@ -64,16 +72,25 @@ const isEmpty = (hit: HitType) => {
   return !content || (isValueHitField(content) && content.value === "");
 };
 
-const TextContent: FC<HitProps> = ({ hit }) => {
+const useDeterminedLanguage = (hit: HitType) => {
   const language = useStringHitFieldValue(hit, "codingLanguage")
+  const syntaxHiglighting = hit._embedded?.syntaxHiglighting as SyntaxHighlighting;
+  if (syntaxHiglighting) {
+    return syntaxHiglighting.modes.prism || syntaxHiglighting.modes.codemirror || syntaxHiglighting.modes.ace || language;
+  }
+  return language;
+};
+
+const TextContent: FC<HitProps> = ({hit}) => {
+  const language = useDeterminedLanguage(hit);
   if (isEmpty(hit)) {
-    return <EmptyContent />;
+    return <EmptyContent/>;
   } else {
     return (
       <pre>
         <code>
           <TextHitField hit={hit} field="content" truncateValueAt={1024} syntaxHighlightingLanguage={language}>
-            <EmptyContent />
+            <EmptyContent/>
           </TextHitField>
         </code>
       </pre>
@@ -81,17 +98,17 @@ const TextContent: FC<HitProps> = ({ hit }) => {
   }
 };
 
-const Content: FC<HitProps> = ({ hit }) => {
+const Content: FC<HitProps> = ({hit}) => {
   const binary = useBooleanHitFieldValue(hit, "binary");
 
   if (binary) {
-    return <BinaryContent />;
+    return <BinaryContent/>;
   } else {
-    return <TextContent hit={hit} />;
+    return <TextContent hit={hit}/>;
   }
 };
 
-const ContentHitRenderer: FC<HitProps> = ({ hit }) => {
+const ContentHitRenderer: FC<HitProps> = ({hit}) => {
   const revision = useStringHitFieldValue(hit, "revision");
   const path = useStringHitFieldValue(hit, "path");
 
@@ -105,7 +122,7 @@ const ContentHitRenderer: FC<HitProps> = ({ hit }) => {
     <Hit>
       <Container>
         <div className="is-flex">
-          <RepositoryAvatar repository={repository} size={48} />
+          <RepositoryAvatar repository={repository} size={48}/>
           <div className="ml-2">
             <Link to={`/repo/${repository.namespace}/${repository.name}`}>
               <Hit.Title>
@@ -116,12 +133,12 @@ const ContentHitRenderer: FC<HitProps> = ({ hit }) => {
               className="is-ellipsis-overflow"
               to={`/repo/${repository.namespace}/${repository.name}/code/sources/${revision}/${path}`}
             >
-              <TextHitField hit={hit} field="path" />
+              <TextHitField hit={hit} field="path"/>
             </Link>
           </div>
         </div>
         <FileContent className="my-2">
-          <Content hit={hit} />
+          <Content hit={hit}/>
         </FileContent>
         <small className="is-size-7">
           Revision:{" "}
@@ -129,7 +146,7 @@ const ContentHitRenderer: FC<HitProps> = ({ hit }) => {
             className="is-ellipsis-overflow"
             to={`/repo/${repository.namespace}/${repository.name}/code/sources/${revision}`}
           >
-            <TextHitField hit={hit} field="revision" />
+            <TextHitField hit={hit} field="revision"/>
           </Link>
         </small>
       </Container>
