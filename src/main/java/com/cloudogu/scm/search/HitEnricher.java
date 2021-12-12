@@ -62,12 +62,11 @@ public class HitEnricher implements HalEnricher {
 
         Map<String, String> syntaxModesByLanguage = contentTypeResolver.findSyntaxModesByLanguage(language);
         if (!syntaxModesByLanguage.isEmpty()) {
-          appender.appendEmbedded("syntaxHiglighting", new SyntaxHighlighting(syntaxModesByLanguage));
+          appender.appendEmbedded("syntaxHighlighting", new SyntaxHighlighting(syntaxModesByLanguage));
         }
       }
     }
   }
-
 
   public static class SyntaxHighlighting extends HalRepresentation {
 

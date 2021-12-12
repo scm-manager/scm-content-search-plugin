@@ -74,9 +74,9 @@ const isEmpty = (hit: HitType) => {
 
 const useDeterminedLanguage = (hit: HitType) => {
   const language = useStringHitFieldValue(hit, "codingLanguage")
-  const syntaxHiglighting = hit._embedded?.syntaxHiglighting as SyntaxHighlighting;
-  if (syntaxHiglighting) {
-    return syntaxHiglighting.modes.prism || syntaxHiglighting.modes.codemirror || syntaxHiglighting.modes.ace || language;
+  const syntaxHighlighting = hit._embedded?.syntaxHighlighting as SyntaxHighlighting;
+  if (syntaxHighlighting) {
+    return syntaxHighlighting.modes.prism || syntaxHighlighting.modes.codemirror || syntaxHighlighting.modes.ace || language;
   }
   return language;
 };
