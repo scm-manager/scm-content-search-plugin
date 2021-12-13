@@ -24,7 +24,6 @@
 
 package com.cloudogu.scm.search;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import de.otto.edison.hal.HalRepresentation;
 import sonia.scm.api.v2.resources.Enrich;
 import sonia.scm.api.v2.resources.HalAppender;
@@ -68,6 +67,7 @@ public class HitEnricher implements HalEnricher {
     }
   }
 
+  @SuppressWarnings("java:S2160") // no need to override equals for dto
   public static class SyntaxHighlighting extends HalRepresentation {
 
     private final Map<String, String> modes;

@@ -24,11 +24,11 @@
 
 package com.cloudogu.scm.search;
 
-import org.github.sdorra.jse.SubjectAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -58,11 +58,11 @@ class HitEnricherTest {
   @Mock
   private HalAppender appender;
 
+  @InjectMocks
   private HitEnricher enricher;
 
   @BeforeEach
   void setUp() {
-    enricher = new HitEnricher(contentTypeResolver);
     Map<String, String> syntaxModesByLanguage = new HashMap<>();
     syntaxModesByLanguage.put("ace", "go-ace");
     syntaxModesByLanguage.put("codemirror", "go-codemirror");
@@ -122,9 +122,11 @@ class HitEnricherTest {
 
     ArgumentCaptor<HitEnricher.SyntaxHighlighting> argumentCaptor = ArgumentCaptor.forClass(HitEnricher.SyntaxHighlighting.class);
     verify(appender).appendEmbedded(Mockito.eq("syntaxHighlighting"), argumentCaptor.capture());
-    assertThat(argumentCaptor.getValue().getModes().get("ace")).isEqualTo("go-ace");
-    assertThat(argumentCaptor.getValue().getModes().get("codemirror")).isEqualTo("go-codemirror");
-    assertThat(argumentCaptor.getValue().getModes().get("prism")).isEqualTo("go-prism");
+
+    assertThat(argumentCaptor.getValue().getModes())
+      .containsEntry("ace", "go-ace")
+      .containsEntry("codemirror", "go-codemirror")
+      .containsEntry("prism", "go-prism");
   }
 
   private void setUpHalContext(Map<String, Hit.Field> fields) {
