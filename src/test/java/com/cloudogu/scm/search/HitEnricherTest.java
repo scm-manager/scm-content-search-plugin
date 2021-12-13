@@ -47,7 +47,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-@SubjectAware("Trillian")
 @SuppressWarnings("UnstableApiUsage")
 @ExtendWith(MockitoExtension.class)
 class HitEnricherTest {
