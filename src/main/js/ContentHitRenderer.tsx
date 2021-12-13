@@ -26,14 +26,14 @@ import React, { FC } from "react";
 import {
   Hit,
   HitProps,
-  TextHitField,
+  isValueHitField,
   Notification,
-  useStringHitFieldValue,
-  useBooleanHitFieldValue,
   RepositoryAvatar,
-  isValueHitField
+  TextHitField,
+  useBooleanHitFieldValue,
+  useStringHitFieldValue
 } from "@scm-manager/ui-components";
-import { Repository, Hit as HitType } from "@scm-manager/ui-types";
+import { Hit as HitType } from "@scm-manager/ui-types";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -47,7 +47,15 @@ const FileContent = styled.div`
   border-radius: 0.25rem;
 `;
 
-const ContentMessage: FC = ({ children }) => <div className="has-background-info-light	p-4 is-size-7">{children}</div>;
+type SyntaxHighlighting = {
+  modes: {
+    ace?: string;
+    codemirror?: string;
+    prism?: string;
+  };
+};
+
+const ContentMessage: FC = ({ children }) => <div className="has-background-info-light p-4 is-size-7">{children}</div>;
 
 const BinaryContent: FC = () => {
   const [t] = useTranslation("plugins");
@@ -64,14 +72,26 @@ const isEmpty = (hit: HitType) => {
   return !content || (isValueHitField(content) && content.value === "");
 };
 
+const useDeterminedLanguage = (hit: HitType) => {
+  const language = useStringHitFieldValue(hit, "codingLanguage");
+  const syntaxHighlighting = hit._embedded?.syntaxHighlighting as SyntaxHighlighting;
+  if (syntaxHighlighting) {
+    return (
+      syntaxHighlighting.modes.prism || syntaxHighlighting.modes.codemirror || syntaxHighlighting.modes.ace || language
+    );
+  }
+  return language;
+};
+
 const TextContent: FC<HitProps> = ({ hit }) => {
+  const language = useDeterminedLanguage(hit);
   if (isEmpty(hit)) {
     return <EmptyContent />;
   } else {
     return (
       <pre>
         <code>
-          <TextHitField hit={hit} field="content" truncateValueAt={1024}>
+          <TextHitField hit={hit} field="content" truncateValueAt={1024} syntaxHighlightingLanguage={language}>
             <EmptyContent />
           </TextHitField>
         </code>
@@ -94,7 +114,7 @@ const ContentHitRenderer: FC<HitProps> = ({ hit }) => {
   const revision = useStringHitFieldValue(hit, "revision");
   const path = useStringHitFieldValue(hit, "path");
 
-  const repository = hit._embedded?.repository as Repository | undefined;
+  const repository = hit._embedded?.repository;
 
   if (!revision || !path || !repository) {
     return <Notification type="danger">Found incomplete content search result</Notification>;
