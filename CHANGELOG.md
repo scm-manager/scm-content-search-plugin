@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Changed
+### 1.0.0 - 21-12-23
 - Syntax highlighting for content ([#3](https://github.com/scm-manager/scm-content-search-plugin/pull/3))
 
 ## 0.9 - 21-09-08
