@@ -29,19 +29,24 @@ import sonia.scm.io.ContentTypeResolver;
 import sonia.scm.repository.api.RepositoryService;
 
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
+import java.util.Set;
 
 public class FileContentFactory {
 
   private static final int HEAD_BUFFER_SIZE = 1024;
 
   private final ContentTypeResolver contentTypeResolver;
+  private final Set<FileContentExtractor> additionalExtractros;
 
   @Inject
-  public FileContentFactory(ContentTypeResolver contentTypeResolver) {
+  public FileContentFactory(ContentTypeResolver contentTypeResolver, Set<FileContentExtractor> additionalExtractros) {
     this.contentTypeResolver = contentTypeResolver;
+    this.additionalExtractros = additionalExtractros;
   }
 
   public FileContent create(RepositoryService repositoryService, String revision, String path) throws IOException {
@@ -69,12 +74,25 @@ public class FileContentFactory {
           ByteStreams.copy(content, output);
           return new FileContent(revision, path, moreAccurateContentType, output.toString());
         } else {
-          return new FileContent(revision, path, moreAccurateContentType);
+          return checkAdditionalExtractors(revision, path, moreAccurateContentType, buffer, content);
         }
       }
 
       return new FileContent(revision, path, contentType);
     }
+  }
+
+  private FileContent checkAdditionalExtractors(String revision, String path, ContentType contentType, byte[] buffer, InputStream content) {
+    return additionalExtractros.stream()
+      .filter(extractor -> extractor.canHandle(contentType))
+      .findFirst()
+      .map(extractor -> applyAdditionalContentExtractor(buffer, content, extractor))
+      .map(text -> new FileContent(revision, path, contentType, text))
+      .orElseGet(() -> new FileContent(revision, path, contentType));
+  }
+
+  private String applyAdditionalContentExtractor(byte[] buffer, InputStream content, FileContentExtractor extractor) {
+    return extractor.extractText(new SequenceInputStream(new ByteArrayInputStream(buffer), content));
   }
 
   private byte[] readHeader(InputStream content) throws IOException {
