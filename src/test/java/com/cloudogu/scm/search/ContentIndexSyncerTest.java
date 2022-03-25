@@ -108,7 +108,7 @@ class ContentIndexSyncerTest {
     when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
     ContentIndexSyncWorker worker = mock(ContentIndexSyncWorker.class);
-    when(indexSyncWorkerFactory.create(repositoryService, indexer, 1)).thenReturn(worker);
+    when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
 
     support(true, true, true);
 
@@ -123,7 +123,7 @@ class ContentIndexSyncerTest {
     when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
     ContentIndexSyncWorker worker = mock(ContentIndexSyncWorker.class);
-    when(indexSyncWorkerFactory.create(repositoryService, indexer, 1)).thenReturn(worker);
+    when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
 
     doThrow(new IOException("fail")).when(worker).ensureIndexIsUpToDate();
 

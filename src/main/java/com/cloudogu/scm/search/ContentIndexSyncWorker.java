@@ -27,6 +27,6 @@ package com.cloudogu.scm.search;
 class ContentIndexSyncWorker extends IndexSyncWorker<FileContent> {
 
   ContentIndexSyncWorker(ContentIndexingContext indexingContext) {
-    super(indexingContext);
+    super(indexingContext, FileContent.VERSION);
   }
 }

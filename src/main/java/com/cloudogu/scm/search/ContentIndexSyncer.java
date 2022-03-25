@@ -32,6 +32,6 @@ public class ContentIndexSyncer extends IndexSyncer<FileContent> {
 
   @Inject
   public ContentIndexSyncer(RepositoryServiceFactory repositoryServiceFactory, ContentIndexerFactory indexerFactory, ContentIndexSyncWorkerFactory indexSyncWorkerFactory) {
-    super(repositoryServiceFactory, indexerFactory, indexSyncWorkerFactory, 1);
+    super(repositoryServiceFactory, indexerFactory, indexSyncWorkerFactory);
   }
 }

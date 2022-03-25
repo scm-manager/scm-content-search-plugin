@@ -29,6 +29,6 @@ import sonia.scm.repository.api.RepositoryService;
 class ContentIndexingContext extends IndexingContext<FileContent> {
 
   ContentIndexingContext(RepositoryService repositoryService, IndexStatusStore indexStatusStore, Indexer<FileContent> indexer) {
-    super(repositoryService, indexStatusStore, indexer, 1);
+    super(repositoryService, indexStatusStore, indexer);
   }
 }

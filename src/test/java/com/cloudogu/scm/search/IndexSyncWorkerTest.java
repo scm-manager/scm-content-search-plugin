@@ -92,7 +92,7 @@ class IndexSyncWorkerTest {
     when(context.getIndexer()).thenReturn(indexer);
     when(context.getRepository()).thenReturn(repository);
 
-    worker = factory.create(repositoryService, indexer, 1);
+    worker = factory.create(repositoryService, indexer);
   }
 
   @Test

@@ -38,7 +38,7 @@ public class ContentIndexSyncWorkerFactory implements IndexSyncWorkerFactory<Fil
   }
 
   @Override
-  public ContentIndexSyncWorker create(RepositoryService repositoryService, Indexer<FileContent> indexer, int currentVersion) {
+  public ContentIndexSyncWorker create(RepositoryService repositoryService, Indexer<FileContent> indexer) {
     return new ContentIndexSyncWorker(indexingContextFactory.create(repositoryService, indexer));
   }
 }
