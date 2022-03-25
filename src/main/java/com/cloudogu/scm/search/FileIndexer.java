@@ -21,52 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.search;
 
-import sonia.scm.repository.Repository;
-import sonia.scm.store.DataStore;
-import sonia.scm.store.DataStoreFactory;
+import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.search.Index;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.time.Instant;
-import java.util.Optional;
 
-import static com.cloudogu.scm.search.IndexStatus.EMPTY;
-
-@Singleton
-public class IndexStatusStore {
-
-  private static final String STORE_NAME ="content-search-status";
-
-  private final DataStore<IndexStatus> store;
+@SuppressWarnings("UnstableApiUsage")
+class FileIndexer extends Indexer<FileContent> {
 
   @Inject
-  public IndexStatusStore(DataStoreFactory storeFactory) {
-    this.store = storeFactory.withType(IndexStatus.class).withName(STORE_NAME).build();
+  FileIndexer(FileContentFactory fileContentFactory, Index<FileContent> index, RepositoryService repositoryService) {
+    super(FileContent.class, fileContentFactory, index, repositoryService);
   }
-
-  public void empty(Repository repository) {
-    update(repository, EMPTY);
-  }
-
-  private IndexStatus status(String revision) {
-    return new IndexStatus(revision, Instant.now(), FileContent.VERSION);
-  }
-
-  public void update(Repository repository, String revision) {
-    store.put(repository.getId(), status(revision));
-  }
-
-  void update(Repository repository, String revision, int version) {
-    IndexStatus status = status(revision);
-    status.setVersion(version);
-    store.put(repository.getId(), status);
-  }
-
-  public Optional<IndexStatus> get(Repository repository) {
-    return store.getOptional(repository.getId());
-  }
-
 }
-

@@ -35,14 +35,13 @@ import sonia.scm.repository.ChangesetPagingResult;
 import sonia.scm.repository.Person;
 import sonia.scm.repository.api.LogCommandBuilder;
 import sonia.scm.repository.api.RepositoryService;
-import sonia.scm.repository.spi.LogCommand;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
-import static com.cloudogu.scm.search.DefaultBranchResolver.*;
+import static com.cloudogu.scm.search.DefaultBranchResolver.Result;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

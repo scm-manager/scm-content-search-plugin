@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class IndexSyncerTest {
+class ContentIndexSyncerTest {
 
   @Mock
   private RepositoryServiceFactory repositoryServiceFactory;
@@ -57,13 +57,13 @@ class IndexSyncerTest {
   private RepositoryService repositoryService;
 
   @Mock
-  private IndexerFactory indexerFactory;
+  private ContentIndexerFactory indexerFactory;
 
   @Mock
-  private IndexSyncWorkerFactory indexSyncWorkerFactory;
+  private ContentIndexSyncWorkerFactory indexSyncWorkerFactory;
 
   @InjectMocks
-  private IndexSyncer indexSyncer;
+  private ContentIndexSyncer indexSyncer;
 
   @Mock
   private Index<FileContent> index;
@@ -104,11 +104,11 @@ class IndexSyncerTest {
 
   @Test
   void shouldCallWorker() throws IOException {
-    Indexer indexer = mock(Indexer.class);
+    FileIndexer indexer = mock(FileIndexer.class);
     when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
-    IndexSyncWorker worker = mock(IndexSyncWorker.class);
-    when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
+    ContentIndexSyncWorker worker = mock(ContentIndexSyncWorker.class);
+    when(indexSyncWorkerFactory.create(repositoryService, indexer, 1)).thenReturn(worker);
 
     support(true, true, true);
 
@@ -119,11 +119,11 @@ class IndexSyncerTest {
 
   @Test
   void shouldCloseRepositoryServiceOnException() throws IOException {
-    Indexer indexer = mock(Indexer.class);
+    FileIndexer indexer = mock(FileIndexer.class);
     when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
-    IndexSyncWorker worker = mock(IndexSyncWorker.class);
-    when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
+    ContentIndexSyncWorker worker = mock(ContentIndexSyncWorker.class);
+    when(indexSyncWorkerFactory.create(repositoryService, indexer, 1)).thenReturn(worker);
 
     doThrow(new IOException("fail")).when(worker).ensureIndexIsUpToDate();
 

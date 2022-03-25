@@ -58,9 +58,9 @@ class IndexerTest {
   private FileContentFactory fileContentFactory;
 
   @InjectMocks
-  private IndexerFactory indexerFactory;
+  private ContentIndexerFactory indexerFactory;
 
-  private Indexer indexer;
+  private FileIndexer indexer;
 
   private final Repository repository = RepositoryTestData.createHeartOfGold();
 

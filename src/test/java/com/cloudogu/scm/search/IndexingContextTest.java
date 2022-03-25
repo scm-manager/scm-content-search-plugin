@@ -47,12 +47,12 @@ class IndexingContextTest {
   private IndexStatusStore indexStatusStore;
 
   @Mock
-  private Indexer indexer;
+  private FileIndexer indexer;
 
   @InjectMocks
   private IndexingContextFactory factory;
 
-  private IndexingContext context;
+  private ContentIndexingContext context;
 
   @BeforeEach
   void setUp() {

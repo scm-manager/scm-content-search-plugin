@@ -21,26 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package com.cloudogu.scm.search;
 
-import sonia.scm.repository.api.RepositoryService;
-import sonia.scm.search.Index;
+import sonia.scm.plugin.Extension;
+import sonia.scm.repository.RepositoryManager;
+import sonia.scm.search.SearchEngine;
+import sonia.scm.web.security.AdministrationContext;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Extension
+@Singleton
 @SuppressWarnings("UnstableApiUsage")
-public class IndexerFactory {
-
-  private final FileContentFactory contentFactory;
+public class ContentIndexListener extends IndexListener<FileContent> {
 
   @Inject
-  public IndexerFactory(FileContentFactory contentFactory) {
-    this.contentFactory = contentFactory;
+  public ContentIndexListener(AdministrationContext administrationContext, RepositoryManager repositoryManager, SearchEngine searchEngine) {
+    super(FileContent.class, administrationContext, repositoryManager, searchEngine, ContentIndexerTask::new);
   }
-
-  public Indexer create(Index<FileContent> index, RepositoryService repositoryService) {
-    return new Indexer(contentFactory, index, repositoryService);
-  }
-
 }

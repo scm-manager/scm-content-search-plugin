@@ -33,7 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FileContentFactory {
+public class FileContentFactory implements ContentFactory<FileContent> {
 
   private static final int HEAD_BUFFER_SIZE = 1024;
 

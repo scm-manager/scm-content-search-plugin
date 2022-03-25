@@ -24,11 +24,18 @@
 
 package com.cloudogu.scm.search;
 
-import java.util.Collection;
+import sonia.scm.repository.Repository;
 
-public interface PathCollector {
+import javax.inject.Inject;
 
-  Collection<String> getPathToStore();
-  Collection<String> getPathToDelete();
+public class ContentIndexerTask extends IndexerTask<FileContent> {
 
+  public ContentIndexerTask(Repository repository) {
+    super(repository);
+  }
+
+  @Inject
+  public void setSyncer(ContentIndexSyncer syncer) {
+    super.setSyncer(syncer);
+  }
 }

@@ -24,36 +24,11 @@
 
 package com.cloudogu.scm.search;
 
-import com.google.common.annotations.VisibleForTesting;
-import sonia.scm.repository.Repository;
-import sonia.scm.search.Index;
-import sonia.scm.search.SerializableIndexTask;
+import sonia.scm.repository.api.RepositoryService;
 
-import javax.inject.Inject;
+class ContentIndexingContext extends IndexingContext<FileContent> {
 
-@SuppressWarnings("UnstableApiUsage")
-public class IndexerTask implements SerializableIndexTask<FileContent> {
-
-  private final Repository repository;
-
-  private IndexSyncer syncer;
-
-  public IndexerTask(Repository repository) {
-    this.repository = repository;
-  }
-
-  @Inject
-  public void setSyncer(IndexSyncer syncer) {
-    this.syncer = syncer;
-  }
-
-  @VisibleForTesting
-  Repository getRepository() {
-    return repository;
-  }
-
-  @Override
-  public void update(Index<FileContent> index) {
-    syncer.ensureIndexIsUpToDate(index, repository);
+  ContentIndexingContext(RepositoryService repositoryService, IndexStatusStore indexStatusStore, Indexer<FileContent> indexer) {
+    super(repositoryService, indexStatusStore, indexer, 1);
   }
 }

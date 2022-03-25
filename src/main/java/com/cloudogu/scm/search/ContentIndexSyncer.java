@@ -24,43 +24,14 @@
 
 package com.cloudogu.scm.search;
 
-import sonia.scm.repository.Repository;
-import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.repository.api.RepositoryServiceFactory;
 
-class IndexingContext {
+import javax.inject.Inject;
 
-  private final RepositoryService repositoryService;
-  private final IndexStatusStore indexStatusStore;
-  private final Indexer indexer;
+public class ContentIndexSyncer extends IndexSyncer<FileContent> {
 
-  IndexingContext(RepositoryService repositoryService, IndexStatusStore indexStatusStore, Indexer indexer) {
-    this.repositoryService = repositoryService;
-    this.indexStatusStore = indexStatusStore;
-    this.indexer = indexer;
+  @Inject
+  public ContentIndexSyncer(RepositoryServiceFactory repositoryServiceFactory, ContentIndexerFactory indexerFactory, ContentIndexSyncWorkerFactory indexSyncWorkerFactory) {
+    super(repositoryServiceFactory, indexerFactory, indexSyncWorkerFactory, 1);
   }
-
-  public Repository getRepository() {
-    return repositoryService.getRepository();
-  }
-
-  public Indexer getIndexer() {
-    return indexer;
-  }
-
-  public IndexStatusStore getIndexStatusStore() {
-    return indexStatusStore;
-  }
-
-  public UpdatePathCollector getUpdatePathCollector() {
-    return new UpdatePathCollector(repositoryService);
-  }
-
-  public RevisionPathCollector getRevisionPathCollector() {
-    return new RevisionPathCollector(repositoryService);
-  }
-
-  public LatestRevisionResolver getLatestRevisionResolver() {
-    return new LatestRevisionResolver(repositoryService, new DefaultBranchResolver(repositoryService));
-  }
-
 }

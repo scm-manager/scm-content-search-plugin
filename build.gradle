@@ -27,6 +27,7 @@ plugins {
 }
 
 dependencies {
+  plugin "sonia.scm.plugins:scm-search-support-plugin:1.0.0-SNAPSHOT"
 }
 
 scmPlugin {

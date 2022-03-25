@@ -25,20 +25,23 @@
 package com.cloudogu.scm.search;
 
 import sonia.scm.repository.api.RepositoryService;
+import sonia.scm.search.Index;
 
 import javax.inject.Inject;
 
-public class IndexSyncWorkerFactory {
+@SuppressWarnings("UnstableApiUsage")
+public class ContentIndexerFactory implements IndexerFactory<FileContent> {
 
-  private final IndexingContextFactory indexingContextFactory;
+  private final FileContentFactory contentFactory;
 
   @Inject
-  public IndexSyncWorkerFactory(IndexingContextFactory indexingContextFactory) {
-    this.indexingContextFactory = indexingContextFactory;
+  public ContentIndexerFactory(FileContentFactory contentFactory) {
+    this.contentFactory = contentFactory;
   }
 
-  public IndexSyncWorker create(RepositoryService repositoryService, Indexer indexer) {
-    return new IndexSyncWorker(indexingContextFactory.create(repositoryService, indexer));
+  @Override
+  public FileIndexer create(Index<FileContent> index, RepositoryService repositoryService) {
+    return new FileIndexer(contentFactory, index, repositoryService);
   }
 
 }

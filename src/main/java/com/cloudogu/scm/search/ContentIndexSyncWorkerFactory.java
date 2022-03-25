@@ -21,35 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.cloudogu.scm.search;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import sonia.scm.xml.XmlInstantAdapter;
+import sonia.scm.repository.api.RepositoryService;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.time.Instant;
+import javax.inject.Inject;
 
-@Data
-@XmlRootElement
-@NoArgsConstructor
-@AllArgsConstructor
-@XmlAccessorType(XmlAccessType.FIELD)
-public class IndexStatus {
+public class ContentIndexSyncWorkerFactory implements IndexSyncWorkerFactory<FileContent> {
 
-  static final String EMPTY = "__empty";
+  private final IndexingContextFactory indexingContextFactory;
 
-  private String revision;
-  @XmlJavaTypeAdapter(XmlInstantAdapter.class)
-  private Instant lastUpdate;
-  private int version;
-
-  public boolean isEmpty() {
-    return EMPTY.equals(revision);
+  @Inject
+  public ContentIndexSyncWorkerFactory(IndexingContextFactory indexingContextFactory) {
+    this.indexingContextFactory = indexingContextFactory;
   }
 
+  @Override
+  public ContentIndexSyncWorker create(RepositoryService repositoryService, Indexer<FileContent> indexer, int currentVersion) {
+    return new ContentIndexSyncWorker(indexingContextFactory.create(repositoryService, indexer));
+  }
 }

@@ -53,16 +53,16 @@ class IndexSyncWorkerTest {
   private RepositoryService repositoryService;
 
   @Mock
-  private Indexer indexer;
+  private FileIndexer indexer;
 
   @Mock
   private IndexingContextFactory contextFactory;
 
   @Mock
-  private IndexingContext context;
+  private ContentIndexingContext context;
 
   @InjectMocks
-  private IndexSyncWorkerFactory factory;
+  private ContentIndexSyncWorkerFactory factory;
 
   private IndexStatusStore statusStore;
 
@@ -75,7 +75,7 @@ class IndexSyncWorkerTest {
   @Mock
   private RevisionPathCollector revisionPathCollector;
 
-  private IndexSyncWorker worker;
+  private ContentIndexSyncWorker worker;
 
   private final Repository repository = RepositoryTestData.createHappyVerticalPeopleTransporter();
 
@@ -92,7 +92,7 @@ class IndexSyncWorkerTest {
     when(context.getIndexer()).thenReturn(indexer);
     when(context.getRepository()).thenReturn(repository);
 
-    worker = factory.create(repositoryService, indexer);
+    worker = factory.create(repositoryService, indexer, 1);
   }
 
   @Test
@@ -121,7 +121,7 @@ class IndexSyncWorkerTest {
 
   @Test
   void shouldDeleteAllForEmptyRepository() throws IOException {
-    statusStore.update(repository, "42");
+    statusStore.update(repository, "42", 1);
 
     worker.ensureIndexIsUpToDate();
 
@@ -148,7 +148,7 @@ class IndexSyncWorkerTest {
 
   @Test
   void shouldReIndexIfStatusIsEmpty() throws IOException {
-    statusStore.empty(repository);
+    statusStore.empty(repository, 1);
 
     List<String> pathToStore = Arrays.asList("a", "b");
     when(revisionPathCollector.getPathToStore()).thenReturn(pathToStore);
@@ -165,7 +165,7 @@ class IndexSyncWorkerTest {
 
   @Test
   void shouldDoNothingIfIndexIsUpToDate() throws IOException {
-    statusStore.update(repository, "42");
+    statusStore.update(repository, "42", 1);
     when(latestRevisionResolver.resolve()).thenReturn(Optional.of("42"));
 
     worker.ensureIndexIsUpToDate();
@@ -175,7 +175,7 @@ class IndexSyncWorkerTest {
 
   @Test
   void shouldUpdateIndex() throws IOException {
-    statusStore.update(repository, "21");
+    statusStore.update(repository, "21", 1);
     when(latestRevisionResolver.resolve()).thenReturn(Optional.of("42"));
 
     List<String> pathToStore = Arrays.asList("a", "b");
