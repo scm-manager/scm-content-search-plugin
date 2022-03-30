@@ -11,7 +11,7 @@ Enable content search for SCM-Manager
 
 ## Usage
 
-Find out how this plugin works on the [plugin documentation page](https://scm-manager.org/plugins/scm-code-search-plugin/docs/).
+Find out how this plugin works on the [plugin documentation page](https://scm-manager.org/plugins/scm-content-search-plugin/docs/).
 
 ## Build and testing
 
