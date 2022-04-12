@@ -39,11 +39,11 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const Container = styled(Hit.Content)`
-  overflow-x: scroll;
+  overflow-x: auto;
 `;
 
 const FileContent = styled.div`
-  border: 1px solid #dbdbdb;
+  border: var(--scm-border);
   border-radius: 0.25rem;
 `;
 
@@ -55,7 +55,7 @@ type SyntaxHighlighting = {
   };
 };
 
-const ContentMessage: FC = ({ children }) => <div className="has-background-info-light p-4 is-size-7">{children}</div>;
+const ContentMessage: FC = ({ children }) => <pre className="p-4 is-size-7 is-family-primary">{children}</pre>;
 
 const BinaryContent: FC = () => {
   const [t] = useTranslation("plugins");

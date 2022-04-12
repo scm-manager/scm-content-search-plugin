@@ -1,0 +1,2 @@
+- type: fixed
+  description: Correct illegibility of content message by theming ([#4](https://github.com/scm-manager/scm-content-search-plugin/pull/4))
