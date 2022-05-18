@@ -67,7 +67,7 @@ public class FileContentFactory {
           ByteArrayOutputStream output = new ByteArrayOutputStream();
           output.write(buffer);
           ByteStreams.copy(content, output);
-          return new FileContent(revision, path, moreAccurateContentType, output.toString());
+          return new FileContent(revision, path, moreAccurateContentType, output.toString("UTF-8"));
         } else {
           return new FileContent(revision, path, moreAccurateContentType);
         }
