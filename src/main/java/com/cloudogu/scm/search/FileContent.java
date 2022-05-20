@@ -38,7 +38,7 @@ import java.nio.file.Paths;
 @SuppressWarnings("UnstableApiUsage")
 public class FileContent {
 
-  static final int VERSION = 1;
+  static final int VERSION = 2;
 
   @Indexed(type = Indexed.Type.STORED_ONLY)
   private final String revision;
