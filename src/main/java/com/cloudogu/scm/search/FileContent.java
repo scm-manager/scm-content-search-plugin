@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 import java.nio.file.Paths;
 
 @Getter
-@IndexedType("content")
+@IndexedType(value = "content", repositoryScoped = true, namespaceScoped = true)
 @SuppressWarnings("UnstableApiUsage")
 public class FileContent {
 
