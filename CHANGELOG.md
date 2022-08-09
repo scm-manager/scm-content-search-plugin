@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.0 - 2022-08-09
+### Changed
+- Declare content as repository-scoped and namespace-scoped for global search ([#6](https://github.com/scm-manager/scm-content-search-plugin/pull/6))
+
 ## 1.0.3 - 2022-06-02
 ### Fixed
 - Character encoding for Windows ([#5](https://github.com/scm-manager/scm-content-search-plugin/pull/5))
