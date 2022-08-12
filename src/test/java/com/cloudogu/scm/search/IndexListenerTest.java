@@ -37,6 +37,7 @@ import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryTestData;
+import sonia.scm.search.ReindexRepositoryEvent;
 import sonia.scm.search.SearchEngine;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
@@ -47,7 +48,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -97,6 +97,18 @@ class IndexListenerTest {
 
     DefaultBranchChangedEvent event = mock(DefaultBranchChangedEvent.class);
     when(event.getRepository()).thenReturn(heartOfGold);
+
+    indexListener.handle(event);
+
+    assertUpdate(heartOfGold);
+  }
+
+  @Test
+  void shouldTriggerUpdateOnReindexEvent() {
+    Repository heartOfGold = RepositoryTestData.createHeartOfGold();
+
+    ReindexRepositoryEvent event = mock(ReindexRepositoryEvent.class);
+    when(event.getItem()).thenReturn(heartOfGold);
 
     indexListener.handle(event);
 
