@@ -74,7 +74,7 @@ public class IndexSyncer {
             IndexSyncWorker worker = indexSyncWorkerFactory.create(repositoryService, indexer);
             worker.reIndex();
         } finally {
-          LOG.debug("ensure index is up to date operation finished in {}", sw.stop());
+          LOG.debug("re-index operation finished in {}", sw.stop());
         }
       } else {
         LOG.warn("repository {} could not index, because it does not support combined modifications", repository);
