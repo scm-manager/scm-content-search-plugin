@@ -70,6 +70,9 @@ class IndexListenerTest {
   @Captor
   private ArgumentCaptor<IndexerTask> taskCaptor;
 
+  @Captor
+  private ArgumentCaptor<ReIndexTask> reindexTaskCaptor;
+
   @Test
   void shouldTriggerUpdateOnPostReceiveRepositoryHookEvent() {
     Repository heartOfGold = RepositoryTestData.createHeartOfGold();
@@ -104,15 +107,24 @@ class IndexListenerTest {
   }
 
   @Test
-  void shouldTriggerUpdateOnReindexEvent() {
+  void shouldPerformFullReindexOnReindexEvent() {
     Repository heartOfGold = RepositoryTestData.createHeartOfGold();
 
     ReindexRepositoryEvent event = mock(ReindexRepositoryEvent.class);
-    when(event.getItem()).thenReturn(heartOfGold);
+    when(event.getRepository()).thenReturn(heartOfGold);
 
     indexListener.handle(event);
 
-    assertUpdate(heartOfGold);
+    assertReindex(heartOfGold);
+  }
+
+  private void assertReindex(Repository repository) {
+    verify(searchEngine.forType(FileContent.class).forResource(repository)).update(
+      reindexTaskCaptor.capture()
+    );
+
+    ReIndexTask task = reindexTaskCaptor.getValue();
+    assertThat(task.getRepository()).isSameAs(repository);
   }
 
   @Test

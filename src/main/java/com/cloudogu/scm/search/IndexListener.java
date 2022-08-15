@@ -87,7 +87,7 @@ public class IndexListener implements ServletContextListener {
   public void handle(ReindexRepositoryEvent event) {
     Repository repository = event.getRepository();
     LOG.debug(
-      "received reindex event for repository {}, update index if necessary",
+      "received reindex event for repository {}, perform full reindex",
       repository
     );
     searchEngine.forType(FileContent.class)
