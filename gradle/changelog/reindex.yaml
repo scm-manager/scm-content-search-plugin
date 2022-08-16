@@ -1,0 +1,2 @@
+- type: added
+  description: Implement reindex event ([#7](https://github.com/scm-manager/scm-content-search-plugin/pull/7))
