@@ -25,6 +25,7 @@
 package com.cloudogu.scm.search;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -75,63 +76,128 @@ class IndexSyncerTest {
     when(repositoryServiceFactory.create(repository)).thenReturn(repositoryService);
   }
 
-  @Test
-  void shouldNotIndexIfLogCommandIsNotSupported() {
-    support(false, true, true);
+  @Nested
+  class EnsureIndexIsUpToDateTests {
+    @Test
+    void shouldNotIndexIfLogCommandIsNotSupported() {
+      support(false, true, true);
 
-    indexSyncer.ensureIndexIsUpToDate(index, repository);
+      indexSyncer.ensureIndexIsUpToDate(index, repository);
 
-    verifyNoInteractions(indexerFactory);
+      verifyNoInteractions(indexerFactory);
+    }
+
+    @Test
+    void shouldNotIndexIfBrowseCommandIsNotSupported() {
+      support(true, false, true);
+
+      indexSyncer.ensureIndexIsUpToDate(index, repository);
+
+      verifyNoInteractions(indexerFactory);
+    }
+
+    @Test
+    void shouldNotIndexIfFeatureIsNotSupported() {
+      support(true, true, false);
+
+      indexSyncer.ensureIndexIsUpToDate(index, repository);
+
+      verifyNoInteractions(indexerFactory);
+    }
+
+    @Test
+    void shouldCallWorker() throws IOException {
+      Indexer indexer = mock(Indexer.class);
+      when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
+
+      IndexSyncWorker worker = mock(IndexSyncWorker.class);
+      when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
+
+      support(true, true, true);
+
+      indexSyncer.ensureIndexIsUpToDate(index, repository);
+
+      verify(worker).ensureIndexIsUpToDate();
+    }
+
+    @Test
+    void shouldCloseRepositoryServiceOnException() throws IOException {
+      Indexer indexer = mock(Indexer.class);
+      when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
+
+      IndexSyncWorker worker = mock(IndexSyncWorker.class);
+      when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
+
+      doThrow(new IOException("fail")).when(worker).ensureIndexIsUpToDate();
+
+      support(true, true, true);
+
+      indexSyncer.ensureIndexIsUpToDate(index, repository);
+
+      verify(repositoryService).close();
+    }
   }
 
-  @Test
-  void shouldNotIndexIfBrowseCommandIsNotSupported() {
-    support(true, false, true);
+  @Nested
+  class ReindexTests {
+    @Test
+    void shouldNotIndexIfLogCommandIsNotSupported() {
+      support(false, true, true);
 
-    indexSyncer.ensureIndexIsUpToDate(index, repository);
+      indexSyncer.reindex(index, repository);
 
-    verifyNoInteractions(indexerFactory);
-  }
+      verifyNoInteractions(indexerFactory);
+    }
 
-  @Test
-  void shouldNotIndexIfFeatureIsNotSupported() {
-    support(true, true, false);
+    @Test
+    void shouldNotIndexIfBrowseCommandIsNotSupported() {
+      support(true, false, true);
 
-    indexSyncer.ensureIndexIsUpToDate(index, repository);
+      indexSyncer.reindex(index, repository);
 
-    verifyNoInteractions(indexerFactory);
-  }
+      verifyNoInteractions(indexerFactory);
+    }
 
-  @Test
-  void shouldCallWorker() throws IOException {
-    Indexer indexer = mock(Indexer.class);
-    when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
+    @Test
+    void shouldNotIndexIfFeatureIsNotSupported() {
+      support(true, true, false);
 
-    IndexSyncWorker worker = mock(IndexSyncWorker.class);
-    when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
+      indexSyncer.reindex(index, repository);
 
-    support(true, true, true);
+      verifyNoInteractions(indexerFactory);
+    }
 
-    indexSyncer.ensureIndexIsUpToDate(index, repository);
+    @Test
+    void shouldCallWorker() throws IOException {
+      Indexer indexer = mock(Indexer.class);
+      when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
-    verify(worker).ensureIndexIsUpToDate();
-  }
+      IndexSyncWorker worker = mock(IndexSyncWorker.class);
+      when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
 
-  @Test
-  void shouldCloseRepositoryServiceOnException() throws IOException {
-    Indexer indexer = mock(Indexer.class);
-    when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
+      support(true, true, true);
 
-    IndexSyncWorker worker = mock(IndexSyncWorker.class);
-    when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
+      indexSyncer.reindex(index, repository);
 
-    doThrow(new IOException("fail")).when(worker).ensureIndexIsUpToDate();
+      verify(worker).reIndex();
+    }
 
-    support(true, true, true);
+    @Test
+    void shouldCloseRepositoryServiceOnException() throws IOException {
+      Indexer indexer = mock(Indexer.class);
+      when(indexerFactory.create(index, repositoryService)).thenReturn(indexer);
 
-    indexSyncer.ensureIndexIsUpToDate(index, repository);
+      IndexSyncWorker worker = mock(IndexSyncWorker.class);
+      when(indexSyncWorkerFactory.create(repositoryService, indexer)).thenReturn(worker);
 
-    verify(repositoryService).close();
+      doThrow(new IOException("fail")).when(worker).reIndex();
+
+      support(true, true, true);
+
+      indexSyncer.reindex(index, repository);
+
+      verify(repositoryService).close();
+    }
   }
 
   private void support(boolean log, boolean browse, boolean baseMod) {
