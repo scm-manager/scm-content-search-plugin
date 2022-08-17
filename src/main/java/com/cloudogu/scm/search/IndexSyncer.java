@@ -65,6 +65,25 @@ public class IndexSyncer {
     }
   }
 
+  void reindex(Index<FileContent> index, Repository repository) {
+    try (RepositoryService repositoryService = repositoryServiceFactory.create(repository)) {
+      if (isSupported(repositoryService)) {
+        Stopwatch sw = Stopwatch.createStarted();
+        Indexer indexer = indexerFactory.create(index, repositoryService);
+        try {
+            IndexSyncWorker worker = indexSyncWorkerFactory.create(repositoryService, indexer);
+            worker.reIndex();
+        } finally {
+          LOG.debug("re-index operation finished in {}", sw.stop());
+        }
+      } else {
+        LOG.warn("repository {} could not index, because it does not support combined modifications", repository);
+      }
+    } catch (IOException e) {
+      LOG.error("failed to update index or to check if an update is required for repository {}", repository, e);
+    }
+  }
+
   private boolean isSupported(RepositoryService repositoryService) {
     return repositoryService.isSupported(Command.LOG)
       && repositoryService.isSupported(Command.BROWSE)

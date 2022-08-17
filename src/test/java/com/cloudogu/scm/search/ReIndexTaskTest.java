@@ -22,22 +22,48 @@
  * SOFTWARE.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.11.1'
-}
+package com.cloudogu.scm.search;
 
-dependencies {
-}
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryTestData;
+import sonia.scm.search.Index;
 
-scmPlugin {
-  scmVersion = "2.38.2-SNAPSHOT"
-  displayName = "Content Search"
-  description = "Enable search for content"
+import static org.mockito.Mockito.verify;
 
-  author = "Cloudogu GmbH"
-  category = "Information"
+@ExtendWith(MockitoExtension.class)
+@SuppressWarnings("UnstableApiUsage")
+class ReIndexTaskTest {
 
-  run {
-    loggingConfiguration = 'src/main/conf/logging.xml'
+  @Mock
+  private IndexSyncer syncer;
+
+  @Mock
+  private Index<FileContent> index;
+
+  @Test
+  void shouldInjectDependencyAndDelegate() {
+    Injector injector = Guice.createInjector(new AbstractModule() {
+      @Override
+      protected void configure() {
+        bind(IndexSyncer.class).toInstance(syncer);
+      }
+    });
+
+    Repository heartOfGold = RepositoryTestData.createHeartOfGold();
+
+    ReIndexTask task = new ReIndexTask(heartOfGold);
+    injector.injectMembers(task);
+
+    task.update(index);
+
+    verify(syncer).reindex(index, heartOfGold);
   }
+
 }

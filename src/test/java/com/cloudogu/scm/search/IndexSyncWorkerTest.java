@@ -192,4 +192,19 @@ class IndexSyncWorkerTest {
     assertThat(statusStore.get(repository))
       .hasValueSatisfying(status -> assertThat(status.getRevision()).isEqualTo("42"));
   }
+
+  @Test
+  void shouldReindex() throws IOException {
+    when(latestRevisionResolver.resolve()).thenReturn(Optional.of("42"));
+    List<String> pathToStore = Arrays.asList("a", "b");
+    when(revisionPathCollector.getPathToStore()).thenReturn(pathToStore);
+
+    worker.reIndex();
+
+    verify(indexer).deleteAll();
+    verify(revisionPathCollector).collect("42");
+    verify(indexer).store("42", pathToStore);
+    assertThat(statusStore.get(repository))
+      .hasValueSatisfying(status -> assertThat(status.getRevision()).isEqualTo("42"));
+  }
 }

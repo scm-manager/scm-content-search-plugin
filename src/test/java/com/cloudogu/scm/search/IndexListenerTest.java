@@ -37,6 +37,7 @@ import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
 import sonia.scm.repository.RepositoryManager;
 import sonia.scm.repository.RepositoryTestData;
+import sonia.scm.search.ReindexRepositoryEvent;
 import sonia.scm.search.SearchEngine;
 import sonia.scm.web.security.AdministrationContext;
 import sonia.scm.web.security.PrivilegedAction;
@@ -47,7 +48,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,6 +69,9 @@ class IndexListenerTest {
 
   @Captor
   private ArgumentCaptor<IndexerTask> taskCaptor;
+
+  @Captor
+  private ArgumentCaptor<ReIndexTask> reindexTaskCaptor;
 
   @Test
   void shouldTriggerUpdateOnPostReceiveRepositoryHookEvent() {
@@ -101,6 +104,27 @@ class IndexListenerTest {
     indexListener.handle(event);
 
     assertUpdate(heartOfGold);
+  }
+
+  @Test
+  void shouldPerformFullReindexOnReindexEvent() {
+    Repository heartOfGold = RepositoryTestData.createHeartOfGold();
+
+    ReindexRepositoryEvent event = mock(ReindexRepositoryEvent.class);
+    when(event.getRepository()).thenReturn(heartOfGold);
+
+    indexListener.handle(event);
+
+    assertReindex(heartOfGold);
+  }
+
+  private void assertReindex(Repository repository) {
+    verify(searchEngine.forType(FileContent.class).forResource(repository)).update(
+      reindexTaskCaptor.capture()
+    );
+
+    ReIndexTask task = reindexTaskCaptor.getValue();
+    assertThat(task.getRepository()).isSameAs(repository);
   }
 
   @Test

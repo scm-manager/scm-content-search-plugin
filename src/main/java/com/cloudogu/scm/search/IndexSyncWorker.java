@@ -101,7 +101,7 @@ class IndexSyncWorker {
     indexStatusStore.update(repository, revision);
   }
 
-  private void reIndex() throws IOException {
+  void reIndex() throws IOException {
     LOG.debug("start re indexing for repository {}", repository);
     indexer.deleteAll();
 

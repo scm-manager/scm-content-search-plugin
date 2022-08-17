@@ -22,22 +22,38 @@
  * SOFTWARE.
  */
 
-plugins {
-  id 'org.scm-manager.smp' version '0.11.1'
-}
+package com.cloudogu.scm.search;
 
-dependencies {
-}
+import com.google.common.annotations.VisibleForTesting;
+import sonia.scm.repository.Repository;
+import sonia.scm.search.Index;
+import sonia.scm.search.SerializableIndexTask;
 
-scmPlugin {
-  scmVersion = "2.38.2-SNAPSHOT"
-  displayName = "Content Search"
-  description = "Enable search for content"
+import javax.inject.Inject;
 
-  author = "Cloudogu GmbH"
-  category = "Information"
+@SuppressWarnings("UnstableApiUsage")
+public class ReIndexTask implements SerializableIndexTask<FileContent> {
 
-  run {
-    loggingConfiguration = 'src/main/conf/logging.xml'
+  private final Repository repository;
+
+  private IndexSyncer syncer;
+
+  public ReIndexTask(Repository repository) {
+    this.repository = repository;
+  }
+
+  @Inject
+  public void setSyncer(IndexSyncer syncer) {
+    this.syncer = syncer;
+  }
+
+  @VisibleForTesting
+  Repository getRepository() {
+    return repository;
+  }
+
+  @Override
+  public void update(Index<FileContent> index) {
+    syncer.reindex(index, repository);
   }
 }
