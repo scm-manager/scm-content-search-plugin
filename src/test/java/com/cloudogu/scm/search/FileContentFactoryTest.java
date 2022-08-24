@@ -54,6 +54,8 @@ class FileContentFactoryTest {
 
   @Mock
   private ContentTypeResolver contentTypeResolver;
+  @Mock
+  private BinaryFileContentResolver binaryFileContentResolver;
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   private RepositoryService repositoryService;
@@ -126,6 +128,7 @@ class FileContentFactoryTest {
 
     contentType = mockContentType(false, "application", "octet-stream");
     when(contentTypeResolver.resolve(eq("bin"), any())).thenReturn(contentType);
+    when(binaryFileContentResolver.resolveContent(any())).thenReturn("binary-test");
 
     FileContent content = fileContentFactory.create(repositoryService, "21", "bin");
 
@@ -133,7 +136,7 @@ class FileContentFactoryTest {
     assertThat(content.getPath()).isEqualTo("bin");
     assertThat(content.getContentType()).isEqualTo("application/octet-stream");
     assertThat(content.isBinary()).isTrue();
-    assertThat(content.getContent()).isNull();
+    assertThat(content.getContent()).contains("binary-test");
     assertThat(content.getCodingLanguage()).isNull();
   }
 

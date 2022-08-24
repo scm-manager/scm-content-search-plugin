@@ -29,19 +29,23 @@ import sonia.scm.io.ContentTypeResolver;
 import sonia.scm.repository.api.RepositoryService;
 
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class FileContentFactory {
 
   private static final int HEAD_BUFFER_SIZE = 1024;
 
   private final ContentTypeResolver contentTypeResolver;
+  private final BinaryFileContentResolver binaryFileContentResolver;
 
   @Inject
-  public FileContentFactory(ContentTypeResolver contentTypeResolver) {
+  public FileContentFactory(ContentTypeResolver contentTypeResolver, BinaryFileContentResolver binaryFileContentResolver) {
     this.contentTypeResolver = contentTypeResolver;
+    this.binaryFileContentResolver = binaryFileContentResolver;
   }
 
   public FileContent create(RepositoryService repositoryService, String revision, String path) throws IOException {
@@ -62,19 +66,25 @@ public class FileContentFactory {
       byte[] buffer = readHeader(content);
       if (buffer.length > 0) {
         ContentType moreAccurateContentType = contentTypeResolver.resolve(path, buffer);
-
         if (moreAccurateContentType.isText()) {
-          ByteArrayOutputStream output = new ByteArrayOutputStream();
-          output.write(buffer);
-          ByteStreams.copy(content, output);
-          return new FileContent(revision, path, moreAccurateContentType, output.toString("UTF-8"));
+          ByteArrayOutputStream output = writeContentToStream(buffer, content);
+          return new FileContent(revision, path, moreAccurateContentType, output.toString(StandardCharsets.UTF_8));
         } else {
-          return new FileContent(revision, path, moreAccurateContentType);
+          ByteArrayOutputStream baos = writeContentToStream(buffer, content);
+          binaryFileContentResolver.getClass().getClassLoader();
+          String fileContent = binaryFileContentResolver.resolveContent(new ByteArrayInputStream(baos.toByteArray()));
+          return new FileContent(revision, path, moreAccurateContentType, fileContent);
         }
       }
-
       return new FileContent(revision, path, contentType);
     }
+  }
+
+  private ByteArrayOutputStream writeContentToStream(byte[] buffer, InputStream inputStream) throws IOException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    output.write(buffer);
+    ByteStreams.copy(inputStream, output);
+    return output;
   }
 
   private byte[] readHeader(InputStream content) throws IOException {
