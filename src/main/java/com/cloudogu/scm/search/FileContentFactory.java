@@ -71,7 +71,6 @@ public class FileContentFactory {
           return new FileContent(revision, path, moreAccurateContentType, output.toString(StandardCharsets.UTF_8));
         } else {
           ByteArrayOutputStream baos = writeContentToStream(buffer, content);
-          binaryFileContentResolver.getClass().getClassLoader();
           String fileContent = binaryFileContentResolver.resolveContent(new ByteArrayInputStream(baos.toByteArray()));
           return new FileContent(revision, path, moreAccurateContentType, fileContent);
         }
