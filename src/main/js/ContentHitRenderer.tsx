@@ -37,6 +37,7 @@ import { Hit as HitType } from "@scm-manager/ui-types";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ExtensionPoint } from "@scm-manager/ui-extensions";
 
 const Container = styled(Hit.Content)`
   overflow-x: auto;
@@ -57,9 +58,14 @@ type SyntaxHighlighting = {
 
 const ContentMessage: FC = ({ children }) => <pre className="p-4 is-size-7 is-family-primary">{children}</pre>;
 
-const BinaryContent: FC = () => {
+const BinaryContent: FC<HitProps> = ({ hit }) => {
   const [t] = useTranslation("plugins");
-  return <ContentMessage>{t("scm-content-search-plugin.hit.binary")}</ContentMessage>;
+
+  return (
+    <ExtensionPoint name="search.content.binary" props={{ hit }}>
+      <ContentMessage>{t("scm-content-search-plugin.hit.binary")}</ContentMessage>
+    </ExtensionPoint>
+  );
 };
 
 const EmptyContent: FC = () => {
@@ -104,7 +110,7 @@ const Content: FC<HitProps> = ({ hit }) => {
   const binary = useBooleanHitFieldValue(hit, "binary");
 
   if (binary) {
-    return <BinaryContent />;
+    return <BinaryContent hit={hit} />;
   } else {
     return <TextContent hit={hit} />;
   }

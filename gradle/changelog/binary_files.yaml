@@ -1,0 +1,2 @@
+- type: added
+  description: Extension point to support binary files in content search index ([#8](https://github.com/scm-manager/scm-content-search-plugin/pull/8))
