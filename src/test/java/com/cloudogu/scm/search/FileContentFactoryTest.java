@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,13 +56,17 @@ class FileContentFactoryTest {
   @Mock
   private ContentTypeResolver contentTypeResolver;
   @Mock
-  private BinaryFileContentResolver binaryFileContentResolver;
+  private BinaryFileContentResolver binaryResolver;
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
   private RepositoryService repositoryService;
 
-  @InjectMocks
   private FileContentFactory fileContentFactory;
+
+  @BeforeEach
+  void initFactory() {
+    fileContentFactory = new FileContentFactory(contentTypeResolver, Set.of(binaryResolver));
+  }
 
   @Test
   void shouldCreateBinaryContent() throws IOException {
@@ -128,7 +133,8 @@ class FileContentFactoryTest {
 
     contentType = mockContentType(false, "application", "octet-stream");
     when(contentTypeResolver.resolve(eq("bin"), any())).thenReturn(contentType);
-    when(binaryFileContentResolver.resolveContent(any())).thenReturn("binary-test");
+    when(binaryResolver.isSupported(any())).thenReturn(true);
+    when(binaryResolver.resolveContent(any())).thenReturn("binary-test");
 
     FileContent content = fileContentFactory.create(repositoryService, "21", "bin");
 

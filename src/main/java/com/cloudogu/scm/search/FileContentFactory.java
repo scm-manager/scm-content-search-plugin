@@ -34,18 +34,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 public class FileContentFactory {
 
   private static final int HEAD_BUFFER_SIZE = 1024;
 
   private final ContentTypeResolver contentTypeResolver;
-  private final BinaryFileContentResolver binaryFileContentResolver;
+  private final Set<BinaryFileContentResolver> binaryFileContentResolvers;
 
   @Inject
-  public FileContentFactory(ContentTypeResolver contentTypeResolver, BinaryFileContentResolver binaryFileContentResolver) {
+  public FileContentFactory(ContentTypeResolver contentTypeResolver, Set<BinaryFileContentResolver> binaryFileContentResolvers) {
     this.contentTypeResolver = contentTypeResolver;
-    this.binaryFileContentResolver = binaryFileContentResolver;
+    this.binaryFileContentResolvers = binaryFileContentResolvers;
   }
 
   public FileContent create(RepositoryService repositoryService, String revision, String path) throws IOException {
@@ -71,8 +72,12 @@ public class FileContentFactory {
           return new FileContent(revision, path, moreAccurateContentType, output.toString(StandardCharsets.UTF_8));
         } else {
           ByteArrayOutputStream baos = writeContentToStream(buffer, content);
-          String fileContent = binaryFileContentResolver.resolveContent(new ByteArrayInputStream(baos.toByteArray()));
-          return new FileContent(revision, path, moreAccurateContentType, fileContent);
+          for (BinaryFileContentResolver resolver : binaryFileContentResolvers) {
+            if (resolver.isSupported(contentType.getRaw())) {
+              String fileContent = resolver.resolveContent(new ByteArrayInputStream(baos.toByteArray()));
+              return new FileContent(revision, path, moreAccurateContentType, fileContent);
+            }
+          }
         }
       }
       return new FileContent(revision, path, contentType);
