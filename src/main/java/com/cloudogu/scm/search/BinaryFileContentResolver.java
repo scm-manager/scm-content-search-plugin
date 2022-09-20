@@ -31,4 +31,6 @@ import java.io.InputStream;
 @ExtensionPoint
 public interface BinaryFileContentResolver {
   String resolveContent(InputStream input);
+
+  boolean isSupported(String contentType);
 }

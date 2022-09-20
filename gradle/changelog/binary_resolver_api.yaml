@@ -1,0 +1,2 @@
+- type: fixed
+  description: Refactor binary resolver api and fix injection issue ([#9](https://github.com/scm-manager/scm-content-search-plugin/pull/9))
