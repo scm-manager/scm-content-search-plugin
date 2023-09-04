@@ -24,7 +24,6 @@
 
 import React, { FC } from "react";
 import {
-  Hit,
   HitProps,
   isValueHitField,
   Notification,
@@ -37,10 +36,15 @@ import { Hit as HitType } from "@scm-manager/ui-types";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ExtensionPoint } from "@scm-manager/ui-extensions";
+import { CardList } from "@scm-manager/ui-layout";
 
-const Container = styled(Hit.Content)`
-  overflow-x: auto;
+const StyledLink = styled(Link)`
+  gap: 0.5rem;
+`;
+
+const EllipsizeLeftLink = styled(Link)`
+  direction: rtl;
+  text-align: left;
 `;
 
 const FileContent = styled.div`
@@ -58,14 +62,9 @@ type SyntaxHighlighting = {
 
 const ContentMessage: FC = ({ children }) => <pre className="p-4 is-size-7 is-family-primary">{children}</pre>;
 
-const BinaryContent: FC<HitProps> = ({ hit }) => {
+const BinaryContent: FC = () => {
   const [t] = useTranslation("plugins");
-
-  return (
-    <ExtensionPoint name="search.content.binary" props={{ hit }}>
-      <ContentMessage>{t("scm-content-search-plugin.hit.binary")}</ContentMessage>
-    </ExtensionPoint>
-  );
+  return <ContentMessage>{t("scm-content-search-plugin.hit.binary")}</ContentMessage>;
 };
 
 const EmptyContent: FC = () => {
@@ -110,7 +109,7 @@ const Content: FC<HitProps> = ({ hit }) => {
   const binary = useBooleanHitFieldValue(hit, "binary");
 
   if (binary) {
-    return <BinaryContent hit={hit} />;
+    return <BinaryContent />;
   } else {
     return <TextContent hit={hit} />;
   }
@@ -121,44 +120,45 @@ const ContentHitRenderer: FC<HitProps> = ({ hit }) => {
   const path = useStringHitFieldValue(hit, "path");
 
   const repository = hit._embedded?.repository;
+  const title = `${repository?.namespace}/${repository?.name}`;
 
   if (!revision || !path || !repository) {
     return <Notification type="danger">Found incomplete content search result</Notification>;
   }
 
   return (
-    <Hit>
-      <Container>
-        <div className="is-flex">
-          <RepositoryAvatar repository={repository} size={48} />
-          <div className="ml-2">
-            <Link to={`/repo/${repository.namespace}/${repository.name}`}>
-              <Hit.Title>
-                {repository.namespace}/{repository.name}
-              </Hit.Title>
-            </Link>
-            <Link
-              className="is-ellipsis-overflow"
-              to={`/repo/${repository.namespace}/${repository.name}/code/sources/${revision}/${path}`}
-            >
-              <TextHitField hit={hit} field="path" />
-            </Link>
-          </div>
-        </div>
+    <CardList.Card className="is-full-width is-flex-direction-column" key={title}>
+      <CardList.Card.Row>
+        <CardList.Card.Title className="is-relative">
+          <StyledLink
+            to={`/repo/${repository.namespace}/${repository.name}`}
+            className="is-flex is-justify-content-flex-start is-align-items-center"
+          >
+            <RepositoryAvatar repository={repository} size={16} /> {title}
+          </StyledLink>
+        </CardList.Card.Title>
+        <EllipsizeLeftLink
+          className="is-ellipsis-overflow is-block"
+          to={`/repo/${repository.namespace}/${repository.name}/code/sources/${revision}/${path}`}
+        >
+          <TextHitField hit={hit} field="path" />
+        </EllipsizeLeftLink>
+      </CardList.Card.Row>
+      <CardList.Card.Row>
         <FileContent className="my-2">
           <Content hit={hit} />
         </FileContent>
-        <small className="is-size-7">
-          Revision:{" "}
-          <Link
-            className="is-ellipsis-overflow"
-            to={`/repo/${repository.namespace}/${repository.name}/code/sources/${revision}`}
-          >
-            <TextHitField hit={hit} field="revision" />
-          </Link>
-        </small>
-      </Container>
-    </Hit>
+      </CardList.Card.Row>
+      <CardList.Card.Row className="is-size-7 has-text-secondary">
+        Revision:{" "}
+        <Link
+          className="is-ellipsis-overflow is-relative"
+          to={`/repo/${repository.namespace}/${repository.name}/code/sources/${revision}`}
+        >
+          <TextHitField hit={hit} field="revision" />
+        </Link>
+      </CardList.Card.Row>
+    </CardList.Card>
   );
 };
 

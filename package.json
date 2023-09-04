@@ -10,16 +10,15 @@
         "postinstall": "plugin-scripts postinstall"
     },
     "devDependencies": {
-        "@scm-manager/ui-plugins": "2.39.0",
-        "@scm-manager/plugin-scripts": "^1.2.2",
+        "@scm-manager/plugin-scripts": "^1.4.0",
         "@scm-manager/babel-preset": "^2.13.1",
-        "@scm-manager/eslint-config": "^2.16.0",
+        "@scm-manager/eslint-config": "^2.17.0",
         "@scm-manager/jest-preset": "^2.13.0",
         "@scm-manager/prettier-config": "^2.10.1",
         "@scm-manager/tsconfig": "^2.13.0",
-        "@scm-manager/ui-scripts": "2.39.0",
-        "@scm-manager/ui-tests": "2.39.0",
-        "@scm-manager/ui-types": "2.39.0",
+        "@scm-manager/ui-scripts": "2.46.0",
+        "@scm-manager/ui-tests": "2.46.0",
+        "@scm-manager/ui-types": "2.46.0",
         "@types/classnames": "^2.2.9",
         "@types/enzyme": "^3.10.3",
         "@types/fetch-mock": "^7.3.1",
@@ -45,17 +44,25 @@
         "extends": "@scm-manager/eslint-config"
     },
     "dependencies": {
-        "@scm-manager/ui-components": "2.39.0",
-        "@scm-manager/ui-extensions": "2.39.0",
+        "@scm-manager/ui-plugins": "2.46.0",
+        "@scm-manager/ui-components": "2.46.0",
+        "@scm-manager/ui-extensions": "2.46.0",
         "classnames": "^2.2.6",
         "query-string": "6.14.1",
-        "react": "^17.0.1",
+        "react": "17",
         "react-hook-form": "^7.5.1",
-        "react-i18next": "^10.13.1",
+        "react-i18next": "11",
         "react-redux": "^5.0.7",
         "react-router-dom": "^5.3.1",
         "redux": "^4.0.0",
         "styled-components": "^5.3.5",
-        "react-router": "^5.3.1"
+        "react-dom": "17",
+        "react-router": "^5.3.1",
+        "@scm-manager/ui-api": "2.46.0",
+        "@scm-manager/ui-forms": "2.46.0",
+        "@scm-manager/ui-buttons": "2.46.0",
+        "@scm-manager/ui-overlays": "2.46.0",
+        "@scm-manager/ui-layout": "2.46.0",
+        "react-query": "^3.25.1"
     }
 }
