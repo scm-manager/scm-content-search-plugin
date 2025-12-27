@@ -14,7 +14,7 @@
         "fields": {
           "path": {
             "exampleValue": "scm-core/src/main/java/App.java",
-            "hints": "Pfad der Datei innerhalb des Repositories"
+            "hints": "Pfad der Datei innerhalb des Repositorys"
           },
           "filename": {
             "exampleValue": "App.java",
@@ -30,11 +30,11 @@
         },
         "examples": [{
           "query": "filename:README.md AND content:ldap",
-          "description": "Wenn nach einem Wort gesucht wird das in einer Datei mit einem bestimmten Namen vorkommt.",
+          "description": "Wenn nach einem Wort gesucht wird, das in einer Datei mit einem bestimmten Namen vorkommt.",
           "explanation": "durchsucht alle Dateien mit den Namen \"README.md\" nach dem Wort \"ldap\"."
         }, {
           "query": "(extension:gradle OR filename:pom.xml) AND content:guava",
-          "description": "Wenn nach einem Wort gesucht wird das entweder in Dateien mit einer bestimmten Endung oder Namen vorkommt.",
+          "description": "Wenn nach einem Wort gesucht wird, das entweder in Dateien mit einer bestimmten Endung oder Namen vorkommt.",
           "explanation": "durchsucht alle Dateien mit der Endung \"gradle\" oder dem Namen \"pom.xml\" nach dem Wort \"guava\"."
         }]
       }

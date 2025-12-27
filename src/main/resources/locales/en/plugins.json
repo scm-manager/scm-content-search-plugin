@@ -30,11 +30,11 @@
         },
         "examples": [{
           "query": "filename:README.md AND content:ldap",
-          "description": "If you search for a word and you search that a specific file contains it.",
+          "description": "If you search for a word within a specific file",
           "explanation": "queries all files with the name \"README.md\" for the word \"ldap\"."
         }, {
           "query": "(extension:gradle OR filename:pom.xml) AND content:guava",
-          "description": "Searching for a word in all files with a specific extension or filename",
+          "description": "Searching for a word in all files with either a specific extension or a specific filename",
           "explanation": "queries all files with the extension \"gradle\" or with the filename \"pom.xml\" for the word \"guava\"."
         }]
       }
