@@ -19,10 +19,11 @@ plugins {
 }
 
 dependencies {
+  optionalPlugin "sonia.scm.plugins:scm-mcp-plugin:1.0.2-SNAPSHOT"
 }
 
 scmPlugin {
-  scmVersion = "3.0.0"
+  scmVersion = "3.11.0"
   displayName = "Content Search"
   description = "Enable search for content"
 
