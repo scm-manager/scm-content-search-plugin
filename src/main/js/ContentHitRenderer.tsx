@@ -14,7 +14,7 @@
  * along with this program. If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { FC } from "react";
+import React, {FC, PropsWithChildren} from "react";
 import {
   HitProps,
   isValueHitField,
@@ -28,7 +28,7 @@ import { Hit as HitType } from "@scm-manager/ui-types";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CardList } from "@scm-manager/ui-layout";
+import { CardList } from "@scm-manager/ui-core";
 
 const StyledLink = styled(Link)`
   gap: 0.5rem;
@@ -52,7 +52,7 @@ type SyntaxHighlighting = {
   };
 };
 
-const ContentMessage: FC = ({ children }) => <pre className="p-4 is-size-7 is-family-primary">{children}</pre>;
+const ContentMessage: FC<PropsWithChildren> = ({ children }) => <pre className="p-4 is-size-7 is-family-primary">{children}</pre>;
 
 const BinaryContent: FC = () => {
   const [t] = useTranslation("plugins");
